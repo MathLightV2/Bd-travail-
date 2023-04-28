@@ -338,5 +338,5 @@ CREATE SEQUENCE seq_insp_nom_fich START WITH 20 INCREMENT BY 1;
 CREATE SEQUENCE seq_inter_iden START WITH 1000000 INCREMENT BY 1;
 
 -- séquence JULIETTE :
--- 
-
+-- troncon, identifiant
+CREATE SEQUENCE seq_tron_id START WITH 1 INCREMENT BY 1;
