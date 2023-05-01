@@ -10,6 +10,7 @@ ALTER TABLE IF EXISTS employe DROP CONSTRAINT IF EXISTS fk_emp_post;
 ALTER TABLE IF EXISTS employe DROP CONSTRAINT IF EXISTS fk_emp_dep;
 ALTER TABLE IF EXISTS troncon DROP CONSTRAINT IF EXISTS fk_tron_deb;
 ALTER TABLE IF EXISTS troncon DROP CONSTRAINT IF EXISTS fk_tron_fin;
+ALTER TABLE IF EXISTS troncon DROP CONSTRAINT IF EXISTS fk_tron_rue;
 ALTER TABLE IF EXISTS inter_tron DROP CONSTRAINT IF EXISTS fk_inter_tron_inter;
 ALTER TABLE IF EXISTS inter_tron DROP CONSTRAINT IF EXISTS fk_inter_tron_tron;
 ALTER TABLE IF EXISTS panneau DROP CONSTRAINT IF EXISTS fk_pan_tron;
@@ -24,8 +25,12 @@ ALTER TABLE IF EXISTS lumiere DROP CONSTRAINT IF EXISTS fk_lum_couleur;
 DROP SEQUENCE IF EXISTS seq_cali_id;
 DROP SEQUENCE IF EXISTS seq_insp_nom_fich;
 DROP SEQUENCE IF EXISTS seq_inter_iden;
+DROP SEQUENCE IF EXISTS seq_tron_id;
+
+DROP VIEW IF EXISTS rapport_inspection;
 
 DROP TABLE IF EXISTS troncon;
+DROP TABLE IF EXISTS rue;
 DROP TABLE IF EXISTS dis_particulier;
 DROP TABLE IF EXISTS lumiere;
 DROP TABLE IF EXISTS couleur;
@@ -61,7 +66,7 @@ CREATE TYPE MODE AS ENUM ('solide', 'clignotant', 'contrôlé', 'intelligente');
 -- TABLE troncon JULIETTE	
 CREATE TABLE troncon(
 	id_troncon				SERIAL,
-	rue						VARCHAR(32)		NOT NULL,
+	rue						INTEGER			NOT NULL,
 	debut_intersection		INTEGER,
 	fin_intersection		INTEGER,
 	longueur				NUMERIC(6,2)	NOT NULL,
@@ -70,6 +75,7 @@ CREATE TABLE troncon(
 	pavage					PAVAGE			NOT NULL,
 	
 	CONSTRAINT pk_troncon PRIMARY KEY(id_troncon),
+	
 	CONSTRAINT cc_troncon_longueur CHECK(longueur >= 0.0 AND longueur <= 100000.0),
 	CONSTRAINT cc_troncon_limite CHECK(limite >= 25 AND limite <= 120),
 	CONSTRAINT cc_troncon_nb_voie CHECK(nb_voie >= 1 AND nb_voie <= 8)
@@ -83,6 +89,7 @@ CREATE TABLE dis_particulier(
 	troncon				INT,
 	
 	CONSTRAINT pk_dis_particulier PRIMARY KEY(id_dis_par),
+	
 	CONSTRAINT cc_dis_particulier_position CHECK(position <= 0.00 AND position >= 100.00)
 );
 
@@ -104,6 +111,7 @@ CREATE TABLE couleur(
 	hex				VARCHAR(6)	NOT NULL,
 	
 	CONSTRAINT pk_couleur PRIMARY KEY(id_couleur),
+	
 	CONSTRAINT cc_couleur_hex CHECK(hex ~* '^[0-9A-F]{6}$')
 );
 
@@ -194,7 +202,6 @@ CREATE TABLE poste(
 	,titre					VARCHAR(32)			NOT NULL
 	
 	,CONSTRAINT pk_pos_id PRIMARY KEY (id_poste)
-
 );
 
 -- TABLE departement ROMAIN
@@ -203,6 +210,14 @@ CREATE TABLE departement(
 	,nom					VARCHAR(32)			NOT NULL
 	
 	,CONSTRAINT pk_dep_id PRIMARY KEY (id_departement)
+);
+
+-- TABLE rue ROMAIN
+CREATE TABLE rue(
+	id_rue					SERIAL
+	,nom					VARCHAR(32)			NOT NULL
+	
+	,CONSTRAINT pk_rue_id PRIMARY KEY (id_rue)
 );
 
 -- TABLE panneau ROMAIN
@@ -304,6 +319,7 @@ ALTER TABLE employe ADD CONSTRAINT fk_emp_dep FOREIGN KEY (departement) REFERENC
 --FOREIGN KEY troncon
 ALTER TABLE troncon ADD CONSTRAINT fk_tron_deb FOREIGN KEY (debut_intersection) REFERENCES intersection(id_intersection);
 ALTER TABLE troncon ADD CONSTRAINT fk_tron_fin FOREIGN KEY (fin_intersection) REFERENCES intersection(id_intersection);
+ALTER TABLE troncon ADD CONSTRAINT fk_tron_rue FOREIGN KEY (rue) REFERENCES rue(id_rue);
 
 --FOREIGN KEY inter_tron
 ALTER TABLE inter_tron ADD CONSTRAINT fk_inter_tron_inter FOREIGN KEY (intersection) REFERENCES intersection(id_intersection);
@@ -340,3 +356,26 @@ CREATE SEQUENCE seq_inter_iden START WITH 1000000 INCREMENT BY 1;
 -- séquence JULIETTE :
 -- troncon, identifiant
 CREATE SEQUENCE seq_tron_id START WITH 1 INCREMENT BY 1;
+
+
+-- vue ROMAIN : 
+-- rapport d'inspection
+CREATE VIEW rapport_inspection AS
+	SELECT 	ins.date_debut "Date et heure de début",  ins.date_fin "Date et heure de fin"
+			,con.nom || ', ' || con.prenom "Nom du conducteur", con.salaire "Salaire horaire du conducteur"
+			,v.marque || ' ' || v.modele || ', ' || v.immatriculation "Informations du véhicule utilisé"
+			,ins.km_debut_inspect "Kilomètrage au début de l''inspection", ins.km_fin_inspect "Kilomètrage fin de l''inspection"
+			,ins.km_fin_inspect - ins.km_debut_inspect "Nb de kilometre parcouru"
+			,ope.nom || ', ' || ope.prenom "Nom de l''opérateur", ope.salaire "Salaire horaire de l''opérateur"
+			,pro.no_serie "No. de série du profileur utilisé"
+	FROM inspection AS ins
+	INNER JOIN employe AS con ON con.id_employe = ins.conducteur
+	INNER JOIN employe AS ope ON ope.id_employe = ins.operateur
+	INNER JOIN vehicule AS v ON v.id_vehicule = ins.vehicule
+	INNER JOIN profileur AS pro ON pro.id_profileur = ins.profileur
+	ORDER BY ins.date_debut
+
+	--SELECT * FROM rapport_inspection;
+
+
+
