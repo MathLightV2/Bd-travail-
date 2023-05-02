@@ -27,7 +27,7 @@ BEGIN
     ) AS subquery;
     
     -- Generate a new random date for the filename
-    SELECT to_char(date_trunc('second', NOW() + (random() * interval '30 days')), 'YYMMDDHH24MISS') INTO date_part;
+    SELECT to_char(date_trunc('second', NOW() - (RAND() * interval '30 days')), 'YYMMDDHH24MISS') INTO date_part;
 
     -- Generate a random extension
     SELECT CASE floor(random() * 4)
@@ -54,27 +54,49 @@ CREATE TRIGGER insert_nom_fichier_donnees
     FOR EACH ROW
     EXECUTE FUNCTION generate_nom_fichier_donnees();
     
+--FUNCTION NOE - Select random id d'une table
+CREATE FUNCTION select_rand_id(id_nom VARCHAR(32), table_nom VARCHAR(32)) RETURNS int
+AS
+BEGIN
+    DECLARE @rand_id int;
+    set @rand_id = (select top 1 id_nom
+                 FROM table_nom
+                 WHERE id_nom <> 1
+                 ORDER BY NEWID())
+    RETURN @rand_id;
+END;
+
+    
 --PROCEDURE NOE - facilite la création d'une inspection
-CREATE OR REPLACE PROCEDURE insert_inspection(
-    p_date_debut TIMESTAMP,
-    p_date_fin TIMESTAMP,
-    p_conducteur INTEGER,
-    p_vehicule INTEGER,
-    p_km_debut_inspect INTEGER,
-    p_km_fin_inspect INTEGER,
-    p_profileur INTEGER,
-    p_operateur INTEGER,
-    p_chemin_fichier_donnees VARCHAR(1024)
-)
+CREATE OR REPLACE PROCEDURE insert_inspection()
 LANGUAGE plpgsql
 AS $$
 BEGIN
     -- variable pour file_name
     DECLARE
-        nom_fichier VARCHAR(30);
+        nom_fichier VARCHAR(30),
+        date_d TIMESTAMP,
+        date_f TIMESTAMP,
+        conducteur INTEGER,
+        vehicule INTEGER,
+        km_debut INTEGER,
+        km_fin INTEGER,
+        profileur INTEGER,
+        operateur INTEGER,
+        chemin_fichier VARCHAR(1024);
+        
     BEGIN
         -- utilise le trigger
-        SELECT generate_nom_fichier_donnees() INTO nom_fichier;
+        --SELECT generate_nom_fichier_donnees() INTO nom_fichier; PAS SUR
+        SELECT date_trunc('second', NOW() - (RAND() * interval '30 days')) INTO date_d;
+        SELECT date_trunc('second', date_debut() - (RAND() * interval '30 days')) INTO date_f;
+        SELECT select_rand_id('id_conducteur', 'conducteur') INTO conducteur;
+        SELECT select_rand_id('id_vehicule', 'vehicule') INTO vehicule;
+        --rand km_debut
+        --rand km_fin
+        SELECT select_rand_id('id_profileur', 'profileur') INTO profileur;
+        SELECT select_rand_id('id_operateur', 'operateur') INTO operateur;
+        --rand chemin_fichier
 
         -- insert new row
         INSERT INTO inspection (
@@ -87,17 +109,17 @@ BEGIN
             profileur,
             operateur,
             chemin_fichier_donnees,
-            nom_fichier_donnees
+            --nom_fichier_donnees
         ) VALUES (
-            p_date_debut,
-            p_date_fin,
-            p_conducteur,
-            p_vehicule,
-            p_km_debut_inspect,
-            p_km_fin_inspect,
-            p_profileur,
-            p_operateur,
-            p_chemin_fichier_donnees,
+            date_d,
+            date_f,
+            conducteur,
+            vehicule,
+            km_debut,
+            km_fin,
+            profileur,
+            operateur,
+            chemin_fichier,
             nom_fichier
         );
     END;
