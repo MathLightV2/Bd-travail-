@@ -53,6 +53,69 @@ CREATE TRIGGER insert_nom_fichier_donnees
     BEFORE INSERT ON inspection
     FOR EACH ROW
     EXECUTE FUNCTION generate_nom_fichier_donnees();
+    
+--PROCEDURE NOE - facilite la création d'une inspection
+CREATE OR REPLACE PROCEDURE insert_inspection(
+    p_date_debut TIMESTAMP,
+    p_date_fin TIMESTAMP,
+    p_conducteur INTEGER,
+    p_vehicule INTEGER,
+    p_km_debut_inspect INTEGER,
+    p_km_fin_inspect INTEGER,
+    p_profileur INTEGER,
+    p_operateur INTEGER,
+    p_chemin_fichier_donnees VARCHAR(1024)
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- variable pour file_name
+    DECLARE
+        nom_fichier VARCHAR(30);
+    BEGIN
+        -- utilise le trigger
+        SELECT generate_nom_fichier_donnees() INTO nom_fichier;
+
+        -- insert new row
+        INSERT INTO inspection (
+            date_debut,
+            date_fin,
+            conducteur,
+            vehicule,
+            km_debut_inspect,
+            km_fin_inspect,
+            profileur,
+            operateur,
+            chemin_fichier_donnees,
+            nom_fichier_donnees
+        ) VALUES (
+            p_date_debut,
+            p_date_fin,
+            p_conducteur,
+            p_vehicule,
+            p_km_debut_inspect,
+            p_km_fin_inspect,
+            p_profileur,
+            p_operateur,
+            p_chemin_fichier_donnees,
+            nom_fichier
+        );
+    END;
+END;
+$$;
+
+--VIEW NOE - donne le cout total d'une inspection
+CREATE VIEW inspection_fees AS 
+SELECT 
+  i.id_inspection, 
+  (e.salaire * EXTRACT(hour FROM (i.date_fin - i.date_debut))) AS employee_fee, 
+  cout_vehicule(i.vehicule, (i.km_fin_inspect - i.km_debut_inspect)) AS vehicle_fee, 
+  (e.salaire * EXTRACT(hour FROM (i.date_fin - i.date_debut))) + cout_vehicule(i.vehicule, (i.km_fin_inspect - i.km_debut_inspect)) AS total_fee
+FROM inspection i 
+INNER JOIN employe e ON i.conducteur = e.id_employe;
+
+--INDEX NOE - sort les inspections par date_debut
+CREATE INDEX inspect_debut ON inspection (date_debut);
 
 -- MATHIS
 
