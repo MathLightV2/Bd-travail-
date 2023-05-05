@@ -7,6 +7,34 @@ VALUES
     ('Rosemont'),
     ('Pierre de Coubertin');
 
+
+INSERT INTO type_pan (nom)
+VALUES 	('arret'),
+		('ceder'),
+		('ralentir'),
+		('limite_de_vitesse');
+		
+		
+-- insertion table type_dis_par MATHIS
+
+INSERT INTO type_dis_par(nom)
+VALUES 	('acces_fauteuil'),
+		('signal_audio_pieton'),
+		('radar');
+		
+
+-- insertion forme MATHIS 
+
+INSERT INTO forme(nom)
+VALUES 	('ronde'),
+		('carree'),
+		('losange'),
+		('fleche'),
+		('humains'),
+		('main'),
+		('velo'),
+		('barre_verticale'),
+		('barre horizontale');
 -- table troncon
 INSERT INTO troncon
 VALUES
@@ -22,7 +50,7 @@ VALUES
     (nextval('seq_tron_id'), (SELECT id_rue FROM rue WHERE nom = 'Pie IX'), 9, 10, 321.75, 50, 2, 'ciment'), -- 10
     (nextval('seq_tron_id'), (SELECT id_rue FROM rue WHERE nom = 'Pie IX'), 10, 11, 361.68, 50, 2, 'asphalte'), -- 11
     (nextval('seq_tron_id'), (SELECT id_rue FROM rue WHERE nom = 'Pie IX'), 11, 1, 230.10, 50, 2, 'asphalte'), -- 12
-    (nextval('seq_tron_id'), (SELECT id_rue FROM rue WHERE nom = 'Viau') 3, 2, 717.69, 50, 2, 'asphalte'), -- 13
+    (nextval('seq_tron_id'), (SELECT id_rue FROM rue WHERE nom = 'Viau'), 3, 2, 717.69, 50, 2, 'asphalte'), -- 13
     (nextval('seq_tron_id'), (SELECT id_rue FROM rue WHERE nom = 'Pierre de Coubertin'), 2, 1, 1070, 50, 2, 'asphalte'), -- 14
     (nextval('seq_tron_id'), (SELECT id_rue FROM rue WHERE nom = 'Viau'), 4, 3, 1000, 30, 2, 'asphalte'), -- 15
     (nextval('seq_tron_id'), (SELECT id_rue FROM rue WHERE nom = 'Rosemont'), 5, 4, 1100, 50, 2, 'asphalte'), -- 16
