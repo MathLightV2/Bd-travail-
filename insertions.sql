@@ -1,41 +1,25 @@
--- ROMAIN
+ALTER SEQUENCE seq_cali_id RESTART WITH 1;
+ALTER SEQUENCE seq_inter_iden RESTART WITH 1;
+ALTER SEQUENCE seq_insp_nom_fich RESTART WITH 1;
+ALTER SEQUENCE seq_insp_nom_fich RESTART WITH 1;
 
--- NOÉ
+-- INSERTION !!!!!!
+-- insertion poste ROMAIN
+INSERT INTO poste (titre)
+	VALUES 	('professionnel'), ('technicien'), ('ingénieur'), ('scientifique'), ('manutentionnaire'), ('soutient');
 
--- MATHIS
+-- insertion departement ROMAIN
+INSERT INTO departement (nom)
+	VALUES 	('administration'), ('ventes et représentation'), ('achats'), ('mécanique'), ('électrique'), ('informatique'), ('recherche');
 
--- insertion table type_pan MATHIS
+-- insertion employe ROMAIN
+CALL ajout_employe('Fuoco-Binette', 'Romain', 'h', '123456789', 35.30, '2018-01-01', 'ingénieur', 'mécanique');
+CALL ajout_employe('Leclerc', 'Mathis', 'h', '987654321', 15.00, '2020-02-01', 'manutentionnaire', 'informatique');
+CALL ajout_employe('Bousquet', 'Noé', 'h', '123459876', 27.50, '2021-03-01', 'technicien', 'électrique');
+CALL ajout_employe('Vincent', 'Juliette', 'f', '987651234', 150.75, '2023-04-01','scientifique', 'recherche');					   
+CALL ajout_employe('Webster', 'Patrick', 'H', '654321789', 220.3, '2023-04-01', 'professionnel', 'informatique');
 
-INSERT INTO type_pan (nom)
-VALUES 	('arret'),
-		('ceder'),
-		('ralentir'),
-		('limite_de_vitesse');
-		
-		
--- insertion table type_dis_par MATHIS
-
-INSERT INTO type_dis_par(nom)
-VALUES 	('acces_fauteuil'),
-		('signal_audio_pieton'),
-		('radar');
-		
-
--- insertion forme MATHIS 
-
-INSERT INTO forme(nom)
-VALUES 	('ronde'),
-		('carree'),
-		('losange'),
-		('fleche'),
-		('humains'),
-		('main'),
-		('velo'),
-		('barre_verticale'),
-		('barre horizontale');
-		
-		-- insertion profileur MATHIS
-
+-- insertion profileur MATHIS
 INSERT INTO profileur (marque,no_serie,date_fab,date_aqui)
 VALUES 	('Solinst','485321','2008-09-14','2018-10-19'),
 		('Dektak','972459','2014-08-22','2019-06-07'),
@@ -52,7 +36,6 @@ VALUES     (nextval('seq_cali_id'),'2020-11-24 10:10:53','2010-11-24 10:10:53',i
         (nextval('seq_cali_id'),'2021-11-24 10:10:53','2021-11-24 10:08:53',id_employe('Fuoco-Binette','Romain'),234.03,250.07,250.08,(SELECT id_profileur FROM profileur WHERE marque ='Normandin')),
         (nextval('seq_cali_id'),'2018-11-24 10:10:53','2018-11-24 10:08:53',id_employe('Fuoco-Binette','Romain'),245.03,250.07,250.08,(SELECT id_profileur FROM profileur WHERE marque ='Normandin')),
         (nextval('seq_cali_id'),'2023-11-24 10:10:53','2023-11-24 10:11:53',id_employe('Fuoco-Binette','Romain'),150.05,150.05,150.05,(SELECT id_profileur FROM profileur WHERE marque ='Normandin'));
-		
 
 -- insertion rue JULIETTE
 INSERT INTO rue(nom)
@@ -62,6 +45,21 @@ VALUES
     ('Pie IX'),
     ('Rosemont'),
     ('Pierre de Coubertin');
+	
+-- insertion intersection NOE
+INSERT INTO intersection (identifiant, latitude, longitude, type_pavage)
+VALUES
+(1234567, 45.553676, -73.551715, 'asphalte'), 
+(4923424    , 45.562572, -73.545911, 'asphalte'), 
+(1247542    , 45.565361, -73.554467, 'asphalte'),
+(1243469    , 45.569242, -73.566290, 'asphalte'), 
+(6586595   , 45.560774, -73.573856, 'asphalte'),
+(6345767    , 45.559922, -73.571203, 'asphalte'), 
+(7745673    , 45.559037, -73.568459, 'asphalte'), 
+(9411111    , 45.558110, -73.565585, 'asphalte'),
+(1346626    , 45.557198, -73.562760, 'asphalte'),
+(5683835    , 45.555962, -73.558897, 'ciment'), 
+(1342475    , 45.554599, -73.554580, 'asphalte');	
     
 -- table troncon JULIETTE
 INSERT INTO troncon
@@ -90,7 +88,30 @@ VALUES
     (nextval('seq_tron_id'), (SELECT id_rue FROM rue WHERE nom = 'Pie IX'), 10, 9, 323.29, 50, 2, 'asphalte'), -- 22
     (nextval('seq_tron_id'), (SELECT id_rue FROM rue WHERE nom = 'Pie IX'), 11, 10, 358.3, 50, 2, 'asphalte'), -- 23
     (nextval('seq_tron_id'), (SELECT id_rue FROM rue WHERE nom = 'Pie IX'), 1, 11, 233.90, 50, 2, 'asphalte'); -- 24
-    
+  
+ -- insertion table type_pan MATHIS
+
+INSERT INTO type_pan (nom)
+VALUES 	('arret'),
+		('ceder'),
+		('ralentir'),
+		('limite_de_vitesse');
+		
+		
+-- insertion table type_dis_par MATHIS
+
+INSERT INTO type_dis_par(nom)
+VALUES 	('acces_fauteuil'),
+		('signal_audio_pieton'),
+		('radar');
+
+-- insertion dis_particulier JULIETTE
+INSERT INTO dis_particulier(type, position, troncon)
+VALUES
+    (1, 99.99, 2),
+    (2, 0.11, 5),
+    (3, 50.00, 7);
+		
  -- table couleur JULIETTE
 INSERT INTO couleur(nom, hex)
 VALUES
@@ -99,28 +120,49 @@ VALUES
     ('vert', '00FF00'),
     ('orange', 'FFBF00'),
     ('blanc', 'FFFFFF');
+	
+-- insertion signalisation ROMAIN	
+CALL ajout_signalisation('verticale', 100, 2);
+CALL ajout_signalisation('horizontale', 100, 8);
+CALL ajout_signalisation('verticale', 100, 9);
+CALL ajout_signalisation('verticale', 75, 5);
+CALL ajout_signalisation('verticale', 10, 11);
+CALL ajout_signalisation('verticale', 50, 22);
+CALL ajout_signalisation('verticale', 100, 21);
+CALL ajout_signalisation('verticale', 88, 20);
 
--- insertion dis_particulier JULIETTE
-INSERT INTO dis_particulier(type, position, troncon)
-VALUES
-    (1, 100, 2),
-    (2, 0, 5),
-    (3, 50, 7);
+-- insertion panneau ROMAIN
+CALL ajout_panneau('arret', 100, 10);
+CALL ajout_panneau('limite_de_vitesse', 50, 10);
+CALL ajout_panneau('arret', 100, 5);
+CALL ajout_panneau('ceder', 100, 12);
+CALL ajout_panneau('ralentir', 60, 4);
 
--- insertion lumiere JULIETTE
+INSERT INTO forme(nom)
+VALUES 	('ronde'),
+		('carree'),
+		('losange'),
+		('fleche'),
+		('humains'),
+		('main'),
+		('velo'),
+		('barre_verticale'),
+		('barre horizontale');
+		
+-- insertion lumiere JULIETTE	
 INSERT INTO lumiere (forme, couleur, mode, signalisation)
 VALUES
     (1, 1, 'solide', 1),
     (1, 2, 'solide', 1),
     (1, 3, 'solide', 1),
-    (2, 1, 'controle', 2),
-    (2, 2, 'controle', 2),
+    (2, 1, 'contrôlé', 2),
+    (2, 2, 'contrôlé', 2),
     (3, 3, 'intelligente', 2),
     (4, 1, 'solide', 3),
     (4, 2, 'solide', 3),
     (4, 3, 'solide', 3),
     (6, 4, 'clignotant', 4),
-    (5, 5, 'controle', 5),
+    (5, 5, 'contrôlé', 5),
     (7, 5, 'solide', 6),
     (8, 3, 'solide', 7),
     (9, 1, 'solide', 8);
