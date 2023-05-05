@@ -90,7 +90,7 @@ CREATE TABLE dis_particulier(
 	
 	CONSTRAINT pk_dis_particulier PRIMARY KEY(id_dis_par),
 	
-	CONSTRAINT cc_dis_particulier_position CHECK(position <= 0.00 AND position >= 100.00)
+	CONSTRAINT cc_dis_particulier_position CHECK(position >= 0.00 AND position <= 100.00)
 );
 
 -- TABLE lumiere JULIETTE
