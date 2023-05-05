@@ -85,7 +85,7 @@ CREATE TABLE troncon(
 CREATE TABLE dis_particulier(
 	id_dis_par			SERIAL,
 	type 				INT,
-	position			DECIMAL(3,2)		NOT NULL,
+	position			DECIMAL(5,2)		NOT NULL,
 	troncon				INT,
 	
 	CONSTRAINT pk_dis_particulier PRIMARY KEY(id_dis_par),
