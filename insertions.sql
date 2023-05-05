@@ -3,7 +3,6 @@ ALTER SEQUENCE seq_inter_iden RESTART WITH 1;
 ALTER SEQUENCE seq_insp_nom_fich RESTART WITH 1;
 ALTER SEQUENCE seq_insp_nom_fich RESTART WITH 1;
 
--- INSERTION !!!!!!
 -- insertion poste ROMAIN
 INSERT INTO poste (titre)
 	VALUES 	('professionnel'), ('technicien'), ('ingénieur'), ('scientifique'), ('manutentionnaire'), ('soutient');
