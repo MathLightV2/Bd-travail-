@@ -10,9 +10,6 @@ ALTER TABLE IF EXISTS employe DROP CONSTRAINT IF EXISTS fk_emp_post;
 ALTER TABLE IF EXISTS employe DROP CONSTRAINT IF EXISTS fk_emp_dep;
 ALTER TABLE IF EXISTS troncon DROP CONSTRAINT IF EXISTS fk_tron_deb;
 ALTER TABLE IF EXISTS troncon DROP CONSTRAINT IF EXISTS fk_tron_fin;
-ALTER TABLE IF EXISTS troncon DROP CONSTRAINT IF EXISTS fk_tron_rue;
-ALTER TABLE IF EXISTS inter_tron DROP CONSTRAINT IF EXISTS fk_inter_tron_inter;
-ALTER TABLE IF EXISTS inter_tron DROP CONSTRAINT IF EXISTS fk_inter_tron_tron;
 ALTER TABLE IF EXISTS panneau DROP CONSTRAINT IF EXISTS fk_pan_tron;
 ALTER TABLE IF EXISTS panneau DROP CONSTRAINT IF EXISTS fk_pan_type;
 ALTER TABLE IF EXISTS dis_particulier DROP CONSTRAINT IF EXISTS fk_dis_par_tron;
@@ -27,14 +24,11 @@ DROP SEQUENCE IF EXISTS seq_insp_nom_fich;
 DROP SEQUENCE IF EXISTS seq_inter_iden;
 DROP SEQUENCE IF EXISTS seq_tron_id;
 
-DROP VIEW IF EXISTS rapport_inspection;
-
 DROP TABLE IF EXISTS troncon;
-DROP TABLE IF EXISTS rue;
 DROP TABLE IF EXISTS dis_particulier;
 DROP TABLE IF EXISTS lumiere;
 DROP TABLE IF EXISTS couleur;
-DROP TABLE IF EXISTS inter_tron;
+DROP TABLE IF EXISTS rue;
 
 DROP TABLE IF EXISTS calibration;
 DROP TABLE IF EXISTS profileur;
@@ -63,10 +57,17 @@ CREATE TYPE ORIENTATION AS ENUM ('horizontale', 'verticale', 'autre');
 CREATE TYPE PAVAGE AS ENUM ('asphalte', 'ciment', 'pave', 'pavé pierre', 'non pavé', 'indéterminé');
 CREATE TYPE MODE AS ENUM ('solide', 'clignotant', 'contrôlé', 'intelligente');
 
+-- TABLE rue JULIETTE
+CREATE TABLE rue(
+	id_rue					SERIAL
+	,nom					VARCHAR(32)			NOT NULL
+	
+	,CONSTRAINT pk_rue_id PRIMARY KEY (id_rue)
+);
 -- TABLE troncon JULIETTE	
 CREATE TABLE troncon(
 	id_troncon				SERIAL,
-	rue						INTEGER			NOT NULL,
+	rue						VARCHAR(32)		NOT NULL,
 	debut_intersection		INTEGER,
 	fin_intersection		INTEGER,
 	longueur				NUMERIC(6,2)	NOT NULL,
@@ -75,7 +76,6 @@ CREATE TABLE troncon(
 	pavage					PAVAGE			NOT NULL,
 	
 	CONSTRAINT pk_troncon PRIMARY KEY(id_troncon),
-	
 	CONSTRAINT cc_troncon_longueur CHECK(longueur >= 0.0 AND longueur <= 100000.0),
 	CONSTRAINT cc_troncon_limite CHECK(limite >= 25 AND limite <= 120),
 	CONSTRAINT cc_troncon_nb_voie CHECK(nb_voie >= 1 AND nb_voie <= 8)
@@ -89,7 +89,6 @@ CREATE TABLE dis_particulier(
 	troncon				INT,
 	
 	CONSTRAINT pk_dis_particulier PRIMARY KEY(id_dis_par),
-	
 	CONSTRAINT cc_dis_particulier_position CHECK(position >= 0.00 AND position <= 100.00)
 );
 
@@ -111,17 +110,7 @@ CREATE TABLE couleur(
 	hex				VARCHAR(6)	NOT NULL,
 	
 	CONSTRAINT pk_couleur PRIMARY KEY(id_couleur),
-	
 	CONSTRAINT cc_couleur_hex CHECK(hex ~* '^[0-9A-F]{6}$')
-);
-
--- TABLE inter_tron JULIETTE
-CREATE TABLE inter_tron(
-	id_inter_tron 	SERIAL,
-	intersection 	INT,
-	troncon			INT,
-	
-	CONSTRAINT pk_inter_tron PRIMARY KEY(id_inter_tron)
 );
 
 -- TABLE calibration MATHIS
@@ -196,12 +185,14 @@ CREATE TABLE employe(
 	,CONSTRAINT cc_date_emb CHECK (date_embauche BETWEEN '2018-01-01' AND CURRENT_DATE)
 );
 
+
 -- TABLE poste ROMAIN
 CREATE TABLE poste(
 	id_poste				SERIAL
 	,titre					VARCHAR(32)			NOT NULL
 	
 	,CONSTRAINT pk_pos_id PRIMARY KEY (id_poste)
+
 );
 
 -- TABLE departement ROMAIN
@@ -210,14 +201,6 @@ CREATE TABLE departement(
 	,nom					VARCHAR(32)			NOT NULL
 	
 	,CONSTRAINT pk_dep_id PRIMARY KEY (id_departement)
-);
-
--- TABLE rue ROMAIN
-CREATE TABLE rue(
-	id_rue					SERIAL
-	,nom					VARCHAR(32)			NOT NULL
-	
-	,CONSTRAINT pk_rue_id PRIMARY KEY (id_rue)
 );
 
 -- TABLE panneau ROMAIN
@@ -319,11 +302,6 @@ ALTER TABLE employe ADD CONSTRAINT fk_emp_dep FOREIGN KEY (departement) REFERENC
 --FOREIGN KEY troncon
 ALTER TABLE troncon ADD CONSTRAINT fk_tron_deb FOREIGN KEY (debut_intersection) REFERENCES intersection(id_intersection);
 ALTER TABLE troncon ADD CONSTRAINT fk_tron_fin FOREIGN KEY (fin_intersection) REFERENCES intersection(id_intersection);
-ALTER TABLE troncon ADD CONSTRAINT fk_tron_rue FOREIGN KEY (rue) REFERENCES rue(id_rue);
-
---FOREIGN KEY inter_tron
-ALTER TABLE inter_tron ADD CONSTRAINT fk_inter_tron_inter FOREIGN KEY (intersection) REFERENCES intersection(id_intersection);
-ALTER TABLE inter_tron ADD CONSTRAINT fk_inter_tron_tron FOREIGN KEY (troncon) REFERENCES troncon(id_troncon);
 
 --FOREIGN KEY panneau
 ALTER TABLE panneau ADD CONSTRAINT fk_pan_tron FOREIGN KEY (troncon) REFERENCES troncon(id_troncon);
@@ -345,10 +323,6 @@ ALTER TABLE lumiere ADD CONSTRAINT fk_lum_couleur FOREIGN KEY (couleur) REFERENC
 -- calibration, id_calibration
 CREATE SEQUENCE seq_cali_id START WITH 1 INCREMENT BY 1;
 
--- séquenece NOE :
--- Inspection, nom_fichier_donnees
-CREATE SEQUENCE seq_insp_nom_fich START WITH 20 INCREMENT BY 1;
-
 -- séquence ROMAIN :
 -- intersection, identifiant
 CREATE SEQUENCE seq_inter_iden START WITH 1000000 INCREMENT BY 1;
@@ -357,6 +331,9 @@ CREATE SEQUENCE seq_inter_iden START WITH 1000000 INCREMENT BY 1;
 -- troncon, identifiant
 CREATE SEQUENCE seq_tron_id START WITH 1 INCREMENT BY 1;
 
+-- séquenece NOE :
+-- Inspection, nom_fichier_donnees
+CREATE SEQUENCE seq_insp_nom_fich START WITH 20 INCREMENT BY 1;
 
 -- vue ROMAIN : 
 -- rapport d'inspection
