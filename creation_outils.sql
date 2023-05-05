@@ -126,6 +126,18 @@ BEGIN
 END;
 $$;
 
+--FUNCTION NOE - loop pour insertion automatique
+CREATE OR REPLACE FUNCTION insert_loop()
+RETURNS VOID AS $$
+DECLARE
+    i INTEGER;
+BEGIN
+    FOR i IN 1..50 LOOP -- 50 a changer
+        PERFORM insert_inspection()
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
 --VIEW NOE - donne le cout total d'une inspection
 CREATE VIEW inspection_fees AS 
 SELECT 
