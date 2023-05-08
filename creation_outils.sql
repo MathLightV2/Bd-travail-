@@ -1,7 +1,8 @@
 -- ROMAIN
 DROP FUNCTION IF EXISTS id_type_pan, id_dis_pan, id_poste, id_departement, id_employe;
+DROP PROCEDURE IF EXISTS ajout_employe, ajout_signalisation, ajout_panneau;
 
-CREATE OR REPLACE FUNCTION id_type_pan(
+CREATE FUNCTION id_type_pan(
 	_nom type_pan.nom%TYPE)
 	RETURNS INT
 	LANGUAGE SQL
@@ -9,7 +10,7 @@ CREATE OR REPLACE FUNCTION id_type_pan(
 		SELECT id_type_pan FROM type_pan WHERE _nom = nom
 	$$;
 	
-CREATE OR REPLACE FUNCTION id_dis_pan(
+CREATE FUNCTION id_dis_pan(
 	_nom type_dis_par.nom%TYPE)
 	RETURNS INT
 	LANGUAGE SQL
@@ -17,7 +18,7 @@ CREATE OR REPLACE FUNCTION id_dis_pan(
 		SELECT id_type_dis_par FROM type_dis_par WHERE _nom = nom
 	$$;
 	
-CREATE OR REPLACE FUNCTION id_poste(
+CREATE FUNCTION id_poste(
 	_titre poste.titre%TYPE)
 	RETURNS INT
 	LANGUAGE SQL
@@ -25,7 +26,7 @@ CREATE OR REPLACE FUNCTION id_poste(
 		SELECT id_poste FROM poste WHERE _titre = titre
 	$$;
 	
-CREATE OR REPLACE FUNCTION id_departement(
+CREATE FUNCTION id_departement(
 	_nom departement.nom%TYPE)
 	RETURNS INT
 	LANGUAGE SQL
@@ -33,7 +34,7 @@ CREATE OR REPLACE FUNCTION id_departement(
 		SELECT id_departement FROM departement WHERE _nom = nom
 	$$;
 
-CREATE OR REPLACE FUNCTION id_employe(
+CREATE FUNCTION id_employe(
 	_nom employe.nom%TYPE
 	,_prenom employe.prenom%TYPE)
 	RETURNS INT
