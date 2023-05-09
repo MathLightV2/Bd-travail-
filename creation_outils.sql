@@ -71,7 +71,6 @@ END;
 CREATE OR REPLACE PROCEDURE insert_inspection()
 LANGUAGE plpgsql
 AS $$
-BEGIN
     -- variable pour file_name
     DECLARE
         date_d inspection.date_debut%TYPE,
