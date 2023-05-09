@@ -93,7 +93,7 @@ BEGIN
         SELECT select_rand_id('id_conducteur', 'conducteur') INTO conducteur;
         SELECT select_rand_id('id_vehicule', 'vehicule') INTO vehicule;
         SELECT (FLOOR(RAND()*(250000 - 1) + 1) INTO km_debut
-        SELECT (FLOOR(RAND()*(250000 - 1) + 1) INTO km_fin --TODO: ADD km_debut
+        SELECT (FLOOR(RAND()*(500000 - 250000) + 250000) INTO km_fin
         SELECT select_rand_id('id_profileur', 'profileur') INTO profileur;
         SELECT select_rand_id('id_operateur', 'operateur') INTO operateur;
         --rand chemin_fichier
