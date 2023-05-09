@@ -64,7 +64,7 @@ CREATE PROCEDURE ajout_signalisation(
 	,_troncon				signalisation.troncon%TYPE)
 	LANGUAGE SQL
 	AS $$			
-	INSERT INTO signalisation (orientation,"position",troncon)
+	INSERT INTO signalisation (orientation,position,troncon)
 			VALUES (_orientation, _position, _troncon);
 	$$;	
 	
