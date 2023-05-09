@@ -9,7 +9,6 @@ ON calibration (employe)
 CREATE OR REPLACE PROCEDURE insert_calibration()
 LANGUAGE plpgsql
 AS $$
-BEGIN
 
  -- varaible
  	DECLARE 
@@ -61,7 +60,7 @@ $$;
 -- fonction mathis - loop pour l'insertion  
 				  
 CREATE OR REPLACE FUNCTION insert_loop_calibration()
-RETURN VOID
+RETURNS VOID
 LANGUAGE plpgsql AS $$
 BEGIN
     FOR i IN 1..50 LOOP -- 50 a changer
