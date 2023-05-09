@@ -1,3 +1,8 @@
+DROP FUNCTION IF EXISTS id_type_pan, id_dis_pan, id_poste, id_departement, id_employe;
+DROP PROCEDURE IF EXISTS ajout_employe, ajout_signalisation, ajout_panneau;
+
+DROP VIEW IF EXISTS rapport_inspection;
+
 ALTER TABLE IF EXISTS calibration DROP CONSTRAINT IF EXISTS fk_cal_emp;
 ALTER TABLE IF EXISTS calibration DROP CONSTRAINT IF EXISTS fk_cal_pro;
 ALTER TABLE IF EXISTS inspection DROP CONSTRAINT IF EXISTS fk_insp_con;
