@@ -56,15 +56,16 @@ CREATE TRIGGER insert_nom_fichier_donnees
     
 --FUNCTION NOE - Select random id d'une table
 CREATE FUNCTION select_rand_id(id_nom VARCHAR(32), table_nom VARCHAR(32)) RETURNS int
-AS
-BEGIN
-    DECLARE @rand_id int;
-    set @rand_id = (select top 1 id_nom
-                 FROM table_nom
-                 WHERE id_nom <> 1
-                 ORDER BY NEWID())
-    RETURN @rand_id;
-END;
+LANGUAGE plpgsql
+AS $$
+    DECLARE Rand_id integer;
+	BEGIN
+    Rand_id := (select  MIN(id_nom)
+                FROM table_nom
+                WHERE id_nom <> 1
+                ORDER BY NEWID());
+    RETURN Rand_id;
+END$$;
 
     
 --PROCEDURE NOE - facilite la création d'une inspection
