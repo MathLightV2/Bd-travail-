@@ -74,16 +74,15 @@ AS $$
 BEGIN
     -- variable pour file_name
     DECLARE
-        nom_fichier inspection.nom_fichier%TYPE,
-        date_d inspection.date_d%TYPE,
-        date_f inspection.date_f%TYPE,
+        date_d inspection.date_debut%TYPE,
+        date_f inspection.date_fin%TYPE,
         conducteur inspection.conducteur%TYPE,
         vehicule inspection.vehicule%TYPE,
-        km_debut inspection.km_debut%TYPE,
-        km_fin inspection.km_fin%TYPE,
+        km_debut inspection.km_debut_inspect%TYPE,
+        km_fin inspection.km_fin_inspect%TYPE,
         profileur inspection.profileur%TYPE,
         operateur inspection.operateur%TYPE,
-        chemin_fichier inspection.chemin_fichier%TYPE;
+        chemin_fichier inspection.chemin_fichier_donnees%TYPE;
         
     BEGIN
         -- utilise le trigger
