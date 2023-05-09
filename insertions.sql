@@ -26,20 +26,6 @@ VALUES
 ('Pie/MtR'    , 45.555962, -73.558897, 'beton'), 
 ('Pie/Sh'    , 45.554599, -73.554580, 'asphalte');
 
-
---INSERT inspection NOE
-DELETE FROM inspection;
-
-DECLARE @first int = 0
-DECLATE @last int = 1000
-WHILE @i < @last
-BEGIN
-    SET @i = @i + 1
-    --code here
-    
-END
-
-
 -- MATHIS
 
 --JULIETTE
