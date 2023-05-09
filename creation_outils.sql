@@ -1,3 +1,7 @@
+DROP PROCEDURE IF EXISTS insert_inspection;
+DROP FUNCTION IF EXISTS generate_nom_fichier_donnees, select_rand_id, insert_loop;
+DROP TRIGGER IF EXISTS insert_nom_fichier_donnees;
+
 -- ROMAIN
 
 -- NOÉ
@@ -74,14 +78,14 @@ LANGUAGE plpgsql
 AS $$
     -- variable pour file_name
     DECLARE
-        date_d inspection.date_debut%TYPE,
-        date_f inspection.date_fin%TYPE,
-        conducteur inspection.conducteur%TYPE,
-        vehicule inspection.vehicule%TYPE,
-        km_debut inspection.km_debut_inspect%TYPE,
-        km_fin inspection.km_fin_inspect%TYPE,
-        profileur inspection.profileur%TYPE,
-        operateur inspection.operateur%TYPE,
+        date_d inspection.date_debut%TYPE;
+        date_f inspection.date_fin%TYPE;
+        conducteur inspection.conducteur%TYPE;
+        vehicule inspection.vehicule%TYPE;
+        km_debut inspection.km_debut_inspect%TYPE;
+        km_fin inspection.km_fin_inspect%TYPE;
+        profileur inspection.profileur%TYPE;
+        operateur inspection.operateur%TYPE;
         chemin_fichier inspection.chemin_fichier_donnees%TYPE;
         
     BEGIN
@@ -91,8 +95,8 @@ AS $$
         SELECT date_trunc('second', date_debut() - (RAND() * interval '30 days')) INTO date_f;
         SELECT select_rand_id('id_conducteur', 'conducteur') INTO conducteur;
         SELECT select_rand_id('id_vehicule', 'vehicule') INTO vehicule;
-        SELECT (FLOOR(RAND()*(250000 - 1) + 1) INTO km_debut
-        SELECT (FLOOR(RAND()*(500000 - 250000) + 250000) INTO km_fin
+        SELECT FLOOR(RAND()*(250000 - 1)) + 1 INTO km_debut;
+        SELECT FLOOR(RAND()*(500000 - 250000)) + 250000 INTO km_fin;
         SELECT select_rand_id('id_profileur', 'profileur') INTO profileur;
         SELECT select_rand_id('id_operateur', 'operateur') INTO operateur;
         --rand chemin_fichier
@@ -107,9 +111,9 @@ AS $$
             km_fin_inspect,
             profileur,
             operateur,
-            chemin_fichier_donnees,
+            chemin_fichier_donnees
             --nom_fichier_donnees
-        ) VALUES (
+     		) VALUES (
             date_d,
             date_f,
             conducteur,
@@ -122,18 +126,15 @@ AS $$
             nom_fichier
         );
     END;
-END;
 $$;
 
 --FUNCTION NOE - loop pour insertion automatique
 CREATE OR REPLACE FUNCTION insert_loop()
 RETURNS VOID
 LANGUAGE plpgsql AS $$
-DECLARE
-    i INTEGER;
 BEGIN
     FOR i IN 1..50 LOOP -- 50 a changer
-        PERFORM insert_inspection()
+        PERFORM insert_inspection();
     END LOOP;
 END$$;
 
