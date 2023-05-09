@@ -30,7 +30,7 @@ BEGIN
     SELECT to_char(date_trunc('second', NOW() - (RAND() * interval '30 days')), 'YYMMDDHH24MISS') INTO date_part;
 
     -- Generate a random extension
-    SELECT CASE floor(random() * 4)
+    SELECT CASE floor(RAND() * 4)
         WHEN 0 THEN 'xdat'
         WHEN 1 THEN 'jdat'
         WHEN 2 THEN 'bdat'
