@@ -79,4 +79,12 @@ CREATE PROCEDURE ajout_panneau(
 
 
 
+-- JULIETTE
+
+CREATE VIEW nbr_ins_emp AS
+SELECT employe.nom, COUNT(*) AS "Nombres dinspections"
+FROM inspection
+INNER JOIN employe
+ON inspection.operateur = employe.id_employe
+GROUP BY employe.nom;
 
