@@ -129,6 +129,7 @@ CALL ajout_signalisation('verticale', 10, 11);
 CALL ajout_signalisation('verticale', 50, 22);
 CALL ajout_signalisation('verticale', 100, 21);
 CALL ajout_signalisation('verticale', 88, 20);
+CALL insert_rand_signalisation();
 
 -- insertion panneau ROMAIN
 CALL ajout_panneau('arret', 100, 10);
@@ -136,6 +137,7 @@ CALL ajout_panneau('limite_de_vitesse', 50, 10);
 CALL ajout_panneau('arret', 100, 5);
 CALL ajout_panneau('ceder', 100, 12);
 CALL ajout_panneau('ralentir', 60, 4);
+CALL insert_rand_panneau();
 
 INSERT INTO forme(nom)
 VALUES 	('ronde'),
