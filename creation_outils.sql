@@ -13,6 +13,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE SEQUENCE IF NOT EXISTS seq_incr START 20;
+
 --FUNCTION NOE - génère automatiquement un nom de fichier
 CREATE FUNCTION generate_nom_fichier_donnees()
 RETURNS TRIGGER AS $$
@@ -22,11 +24,8 @@ DECLARE
     ext VARCHAR(4);
     nom_fichier VARCHAR(30);
 BEGIN
-    -- get l'incrément actuel
-    SELECT COALESCE(MAX(subquery.incr) + 1, 20) INTO incr FROM (
-        SELECT substring(nom_fichier_donnees, 5, 8)::INTEGER AS incr FROM inspection
-        WHERE substring(nom_fichier_donnees, 1, 3) = 'PZ2'
-    ) AS subquery;
+    -- get l'incrément actuel	
+	SELECT nextval('seq_incr') INTO incr;
     
     -- generate un nom random
     SELECT to_char(date_trunc('second', NOW() - (Random() * interval '30 days')), 'YYMMDDHH24MISS') INTO date_part;
@@ -89,13 +88,13 @@ AS $$
         --SELECT generate_nom_fichier_donnees() INTO nom_fichier; PAS SUR
         SELECT date_trunc('second', NOW() - (Random() * interval '30 days')) INTO date_d;
         SELECT date_trunc('second', date_d - (Random() * interval '30 days')) INTO date_f;
-        SELECT select_rand_id('id_employe', 'employe') INTO conducteur; --todo
+        SELECT select_rand_id('id_employe', 'employe') INTO conducteur;
         SELECT select_rand_id('id_vehicule', 'vehicule') INTO vehicule;
         SELECT FLOOR(Random()*(250000 - 1)) + 1 INTO km_debut;
         SELECT FLOOR(Random()*(500000 - 250000)) + 250000 INTO km_fin;
         SELECT select_rand_id('id_profileur', 'profileur') INTO profileur;
         SELECT select_rand_id('id_employe', 'employe') INTO operateur;
-        --rand chemin_fichier
+        SELECT 'x:\' INTO chemin_fichier;
 
         -- insert new row
         INSERT INTO inspection (
@@ -146,4 +145,4 @@ INNER JOIN employe e ON i.conducteur = e.id_employe;
 --INDEX NOE - sort les inspections par date_debut
 CREATE INDEX inspect_debut ON inspection (date_debut);
 
---SELECT insert_loop();
+SELECT insert_loop();
