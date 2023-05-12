@@ -1,10 +1,8 @@
 DROP PROCEDURE IF EXISTS insert_inspection;
-DROP FUNCTION IF EXISTS generate_nom_fichier_donnees, select_rand_id, insert_loop;
-DROP TRIGGER IF EXISTS insert_nom_fichier_donnees;
-
--- ROMAIN
-
--- NOÉ
+DROP TRIGGER IF EXISTS insert_nom_fichier_donnees on inspection;
+DROP VIEW IF EXISTS inspection_fees;
+DROP INDEX IF EXISTS inspect_debut;
+DROP FUNCTION IF EXISTS generate_nom_fichier_donnees, select_rand_id, insert_loop, cout_vehicule;
 
 --FUNCTION NOE - calcule le cout d'un vehicule selon le nombre de km
 CREATE FUNCTION cout_vehicule(id_vehicule INTEGER, distance_km INTEGER) RETURNS NUMERIC AS $$
@@ -16,41 +14,40 @@ END;
 $$ LANGUAGE plpgsql;
 
 --FUNCTION NOE - génère automatiquement un nom de fichier
-CREATE OR REPLACE FUNCTION generate_nom_fichier_donnees()
+CREATE FUNCTION generate_nom_fichier_donnees()
 RETURNS TRIGGER AS $$
 DECLARE
-    increment INTEGER;
+    incr INTEGER;
     date_part VARCHAR(14);
-    extension VARCHAR(4);
+    ext VARCHAR(4);
     nom_fichier VARCHAR(30);
 BEGIN
-    -- Get the current increment for the filename
-    SELECT COALESCE(MAX(increment) + 1, 20) INTO increment FROM (
-        SELECT substring(nom_fichier_donnees, 5, 8)::INTEGER AS increment FROM inspection
+    -- get l'incrément actuel
+    SELECT COALESCE(MAX(subquery.incr) + 1, 20) INTO incr FROM (
+        SELECT substring(nom_fichier_donnees, 5, 8)::INTEGER AS incr FROM inspection
         WHERE substring(nom_fichier_donnees, 1, 3) = 'PZ2'
     ) AS subquery;
     
-    -- Generate a new random date for the filename
-    SELECT to_char(date_trunc('second', NOW() - (RAND() * interval '30 days')), 'YYMMDDHH24MISS') INTO date_part;
+    -- generate un nom random
+    SELECT to_char(date_trunc('second', NOW() - (Random() * interval '30 days')), 'YYMMDDHH24MISS') INTO date_part;
 
-    -- Generate a random extension
-    SELECT CASE floor(RAND() * 4)
+    -- generate une extention random
+    SELECT CASE floor(Random() * 4)
         WHEN 0 THEN 'xdat'
         WHEN 1 THEN 'jdat'
         WHEN 2 THEN 'bdat'
         WHEN 3 THEN 'kdat'
-    END INTO extension;
+    END INTO ext;
 
-    -- Combine the parts into the final filename
-    nom_fichier := 'PZ2_' || lpad(increment::text, 8, '0') || '_' || date_part || '.' || extension;
+    -- combine les parties
+    nom_fichier := 'PZ2_' || lpad(incr::text, 8, '0') || '_' || date_part || '.' || ext;
 
-    -- Set the generated filename for the new row
+    -- set le filename
     NEW.nom_fichier_donnees := nom_fichier;
 
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
 
 --TRIGGER NOE - insère le nom de fichier de la fonction précédente dans l'inspection
 CREATE TRIGGER insert_nom_fichier_donnees
@@ -62,18 +59,17 @@ CREATE TRIGGER insert_nom_fichier_donnees
 CREATE FUNCTION select_rand_id(id_nom VARCHAR(32), table_nom VARCHAR(32)) RETURNS int
 LANGUAGE plpgsql
 AS $$
-    DECLARE Rand_id integer;
+    DECLARE 
+		Rand_id integer;
+		query TEXT;
 	BEGIN
-    Rand_id := (select  MIN(id_nom)
-                FROM table_nom
-                WHERE id_nom <> 1
-                ORDER BY NEWID());
-    RETURN Rand_id;
+        query := format('SELECT MIN(%I) FROM %I WHERE %I <> 1 ORDER BY RANDOM()', id_nom, table_nom, id_nom);
+    	EXECUTE query INTO Rand_id;
+    	RETURN Rand_id;
 END$$;
 
-    
 --PROCEDURE NOE - facilite la création d'une inspection
-CREATE OR REPLACE PROCEDURE insert_inspection()
+CREATE PROCEDURE insert_inspection()
 LANGUAGE plpgsql
 AS $$
     -- variable pour file_name
@@ -91,14 +87,14 @@ AS $$
     BEGIN
         -- utilise le trigger
         --SELECT generate_nom_fichier_donnees() INTO nom_fichier; PAS SUR
-        SELECT date_trunc('second', NOW() - (RAND() * interval '30 days')) INTO date_d;
-        SELECT date_trunc('second', date_debut() - (RAND() * interval '30 days')) INTO date_f;
-        SELECT select_rand_id('id_conducteur', 'conducteur') INTO conducteur;
+        SELECT date_trunc('second', NOW() - (Random() * interval '30 days')) INTO date_d;
+        SELECT date_trunc('second', date_d - (Random() * interval '30 days')) INTO date_f;
+        SELECT select_rand_id('id_employe', 'employe') INTO conducteur; --todo
         SELECT select_rand_id('id_vehicule', 'vehicule') INTO vehicule;
-        SELECT FLOOR(RAND()*(250000 - 1)) + 1 INTO km_debut;
-        SELECT FLOOR(RAND()*(500000 - 250000)) + 250000 INTO km_fin;
+        SELECT FLOOR(Random()*(250000 - 1)) + 1 INTO km_debut;
+        SELECT FLOOR(Random()*(500000 - 250000)) + 250000 INTO km_fin;
         SELECT select_rand_id('id_profileur', 'profileur') INTO profileur;
-        SELECT select_rand_id('id_operateur', 'operateur') INTO operateur;
+        SELECT select_rand_id('id_employe', 'employe') INTO operateur;
         --rand chemin_fichier
 
         -- insert new row
@@ -122,19 +118,18 @@ AS $$
             km_fin,
             profileur,
             operateur,
-            chemin_fichier,
-            nom_fichier
+            chemin_fichier
         );
     END;
 $$;
 
 --FUNCTION NOE - loop pour insertion automatique
-CREATE OR REPLACE FUNCTION insert_loop()
+CREATE FUNCTION insert_loop()
 RETURNS VOID
 LANGUAGE plpgsql AS $$
 BEGIN
     FOR i IN 1..50 LOOP -- 50 a changer
-        PERFORM insert_inspection();
+        CALL insert_inspection();
     END LOOP;
 END$$;
 
@@ -151,11 +146,4 @@ INNER JOIN employe e ON i.conducteur = e.id_employe;
 --INDEX NOE - sort les inspections par date_debut
 CREATE INDEX inspect_debut ON inspection (date_debut);
 
--- MATHIS
-
--- JULIETTE
-
-
-
-
-
+--SELECT insert_loop();
