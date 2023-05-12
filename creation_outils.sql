@@ -1,8 +1,7 @@
 -- INDEX mathis
 DROP INDEX IF EXISTS idx_cali_emp ;
 CREATE INDEX idx_cali_emp
-ON calibration (employe)
-);
+ON calibration (employe);
 
 
 -- PROCEDURE mathis
@@ -68,7 +67,7 @@ BEGIN
     END LOOP;
 END$$;
 
--- ROMAIN
+-- ROMAIN FONCTIONS
 
 CREATE FUNCTION id_type_pan(
 	_nom type_pan.nom%TYPE)
@@ -111,6 +110,25 @@ CREATE FUNCTION id_employe(
 		SELECT id_employe FROM employe WHERE (_nom = nom) AND (_prenom = prenom)
 	$$;
 
+--version révisé par romain utilisation d'un query_str car dans la version précédente le compilateur considérait
+--table_nom comme le nom de table et non pas le contenu de la varible 
+CREATE FUNCTION select_rand_id(
+    id_nom      VARCHAR(32), 
+    table_nom   VARCHAR(32)) 
+RETURNS int
+LANGUAGE plpgsql
+AS $$
+    DECLARE 
+        Rand_id integer;
+        query_str text;
+    BEGIN
+        query_str := 'SELECT ' || id_nom || ' FROM ' || table_nom || ' ORDER BY RANDOM () LIMIT 1';
+        EXECUTE query_str INTO Rand_id;
+        RETURN Rand_id;
+    END;
+$$;
+
+-- ROMAIN PROCÉDURES 
 CREATE PROCEDURE ajout_employe(
 	nom				employe.nom%TYPE
 	,prenom			employe.prenom%TYPE
@@ -144,8 +162,54 @@ CREATE PROCEDURE ajout_panneau(
 	AS $$			
 	INSERT INTO panneau ("type", "position", troncon)
 			VALUES (id_type_pan(_type), _position, _troncon);
-	$$;		
+	$$;	
 
+
+CREATE OR REPLACE PROCEDURE insert_rand_panneau()
+LANGUAGE plpgsql
+AS $$
+ -- varaible
+ 	DECLARE 
+ 	_type					panneau.type%TYPE;
+	_position				panneau.position%TYPE;
+	_troncon				panneau.troncon%TYPE;
+	
+	BEGIN 
+		-- ajoute les row			  
+		FOR i IN 1..50 LOOP -- 50 a changer
+			SELECT select_rand_id('id_type_pan', 'type_pan') INTO _type;
+			SELECT (RANDOM()*100) INTO _position;
+			SELECT select_rand_id('id_troncon','troncon') INTO _troncon;
+
+			INSERT INTO panneau ("type", "position", troncon)
+				VALUES(_type, _position, _troncon);
+		END LOOP;	
+	END;
+$$;
+
+CREATE OR REPLACE PROCEDURE insert_rand_signalisation()
+LANGUAGE plpgsql
+AS $$
+ -- varaible
+ 	DECLARE 
+ 	_orientation			signalisation.orientation%TYPE;
+	_position				signalisation.position%TYPE;
+	_troncon				signalisation.troncon%TYPE;
+	
+	BEGIN 
+		-- ajoute les row			  
+		FOR i IN 1..50 LOOP 
+			-- sélection d'une valeur random du ENUM orientation 
+			-- enum_range retourne un array de valeurs et unnest les met dans un tableau (rows)
+			SELECT * FROM unnest(enum_range(NULL::orientation)) ORDER BY random() LIMIT 1 INTO _orientation;
+			SELECT (RANDOM()*100) INTO _position;
+			SELECT select_rand_id('id_troncon','troncon') INTO _troncon;
+
+			INSERT INTO signalisation (orientation, "position", troncon)
+				VALUES(_orientation, _position, _troncon);
+		END LOOP;	
+	END;
+$$;
 
 
 -- JULIETTE
@@ -195,19 +259,19 @@ AS $$
 SELECT (salaire *  32 * 4 * 12) FROM employe WHERE nom_emp = nom;
 $$;
 
--- Declencheur :
--- Le salaire ne doit pas depasser 250$
-CREATE FUNCTION max_salaire()
-RETURNS TRIGGER
-LANGUAGE PLPGSQL
-AS $$
-BEGIN
-IF NEW.salaire > 250 THEN
-RAISE EXCEPTION 'Le salaire ne peut pas depasser 250$';
-END IF;
-RETURN NEW;
-END;
--- Trigger :
-CREATE TRIGGER salaire_max ON employe
-FOR EACH ROW
-EXECUTE FUNCTION max_salaire();
+-- -- Declencheur :
+-- -- Le salaire ne doit pas depasser 250$
+-- CREATE FUNCTION max_salaire()
+-- RETURNS TRIGGER
+-- LANGUAGE PLPGSQL
+-- AS $$
+-- BEGIN
+-- IF NEW.salaire > 250 THEN
+-- RAISE EXCEPTION 'Le salaire ne peut pas depasser 250$';
+-- END IF;
+-- RETURN NEW;
+-- END$$;
+-- -- Trigger :
+-- CREATE TRIGGER salaire_max ON employe
+-- FOR EACH ROW
+-- EXECUTE FUNCTION max_salaire();
