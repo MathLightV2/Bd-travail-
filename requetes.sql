@@ -9,7 +9,7 @@
 -- Réalisé par : ...
 -- Aidé par : ...
 -- =======================================================
-votre requête
+
 -- =======================================================
 
 -- ROMAIN
@@ -19,3 +19,19 @@ votre requête
 -- MATHIS
 
 --JULIETTE
+-- =======================================================
+-- Requête #
+-- Objectif : Donner le nombre d’inspections où chaque employé était conducteur.
+-- ...
+-- ...
+-- Évaluation : 
+-- ...
+-- ...
+-- Réalisé par : Juliette Vincent
+-- Aidé par :
+-- =======================================================
+SELECT COUNT(*)
+FROM inspection
+WHERE 
+GROUP BY 
+-- =======================================================
