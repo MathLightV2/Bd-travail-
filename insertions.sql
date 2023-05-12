@@ -7,34 +7,6 @@ VALUES
     ('Rosemont'),
     ('Pierre de Coubertin');
 
-
-INSERT INTO type_pan (nom)
-VALUES 	('arret'),
-		('ceder'),
-		('ralentir'),
-		('limite_de_vitesse');
-		
-		
--- insertion table type_dis_par MATHIS
-
-INSERT INTO type_dis_par(nom)
-VALUES 	('acces_fauteuil'),
-		('signal_audio_pieton'),
-		('radar');
-		
-
--- insertion forme MATHIS 
-
-INSERT INTO forme(nom)
-VALUES 	('ronde'),
-		('carree'),
-		('losange'),
-		('fleche'),
-		('humains'),
-		('main'),
-		('velo'),
-		('barre_verticale'),
-		('barre horizontale');
 -- table troncon
 INSERT INTO troncon
 VALUES
@@ -93,3 +65,82 @@ VALUES
     (7, 5, 'solide', 6),
     (8, 3, 'solide', 7),
     (9, 1, 'solide', 8);
+
+-- insertion random lumiere JULIETTE
+				
+CREATE PROCEDURE insertion_lumiere()
+LANGUAGE PLPGSQL
+AS $$
+	DECLARE
+		id_lumiere			lumiere.id_lumiere%TYPE;
+		forme_lum			lumiere.forme%TYPE;
+		couleur_lum			lumiere.couleur%TYPE;
+		mode_lum			lumiere.mode%TYPE;
+		signalisation_lum	lumiere.signalisation%TYPE;
+BEGIN
+		SELECT nextval('lumiere_id') INTO id_lumiere;
+		SELECT select_rand_id('id_forme', 'forme') INTO forme_lum;
+        SELECT select_rand_id('id_couleur', 'couleur') INTO couleur_lum;
+        -- ENUM RANDOM
+        SELECT select_rand_id('id_signalisation', 'signalisation') INTO signalisation_lum;
+
+	INSERT INTO lumiere
+	VALUES (
+        id_lumiere, --???
+        forme_lum,
+        -- MODE
+        signalisation_lum
+    );
+END;
+$$;
+				
+				
+CREATE FUNCTION insert_lumiere_loop()
+RETURN VOID
+LANGUAGE PLPGSQL
+AS $$
+DECLARE
+i INTEGER;
+BEGIN
+	FOR I IN 1..6 LOOP
+			PERFORM insertion_lumiere();
+	END LOOP;
+END$$;	
+
+-- insertion aleatoire dispositif particulier JULIETTE
+CREATE PROCEDURE insertion_dis_par()
+LANGUAGE PLPGSQL
+AS $$
+	DECLARE
+		id_dis_par			lumiere.id_dis_par%TYPE;
+		type_dis			lumiere.type%TYPE;
+		position_dis			lumiere.position%TYPE;
+		troncon_dis			lumiere.troncon%TYPE;
+BEGIN
+		SELECT nextval('id_dis_par') INTO id_dis_par;
+		SELECT select_rand_id('id_type_dis_par', 'type_dis_par') INTO type_dis;
+        SELECT select_rand_id(RAND()*(100.00 - 0.00)) INTO position_dis;
+        SELECT select_rand_id('id_troncon', 'troncon') INTO troncon_dis;
+
+	INSERT INTO dis_particulier
+	VALUES (
+        id_type_dis_par,
+        type_dis,
+        position_dis,
+        troncon_dis
+    );
+END;
+$$;
+				
+-- insertion random dis_particulier JULIETTE
+CREATE FUNCTION inster_dis_loop()
+RETURN VOID
+LANGUAGE PLPGSQL
+AS $$
+DECLARE
+i INTEGER;
+BEGIN
+	FOR I IN 1..6 LOOP
+			PERFORM inser_dis_par();
+	END LOOP;
+END$$;
