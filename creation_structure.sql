@@ -358,9 +358,9 @@ CREATE VIEW rapport_inspection AS
 	INNER JOIN employe AS ope ON ope.id_employe = ins.operateur
 	INNER JOIN vehicule AS v ON v.id_vehicule = ins.vehicule
 	INNER JOIN profileur AS pro ON pro.id_profileur = ins.profileur
-	ORDER BY ins.date_debut
+	ORDER BY ins.date_debut;
 
 	--SELECT * FROM rapport_inspection;
-
-
+-- index ROMAIN
+CREATE INDEX idx_calibration ON calibration(date_debut);
 
