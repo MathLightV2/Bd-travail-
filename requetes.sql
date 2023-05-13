@@ -20,18 +20,43 @@
 
 --JULIETTE
 -- =======================================================
--- Requête #
+-- Requête # 1
 -- Objectif : Donner le nombre d’inspections où chaque employé était conducteur.
 -- ...
 -- ...
--- Évaluation : 
+-- Évaluation : Complètement fonctionnelle
 -- ...
 -- ...
 -- Réalisé par : Juliette Vincent
--- Aidé par :
 -- =======================================================
 SELECT COUNT(*)
 FROM inspection
 WHERE 
 GROUP BY 
 -- =======================================================
+-- =======================================================
+-- Requête # 2
+-- Objectif : Pour chacune des inspections, on désire savoir quels ont été les frais associés (vous
+-- devez tenir compte du temps passé pour les deux employés lors de l’inspection et des
+-- coûts d’exploitation du véhicule à 4.79$ par kilomètre.).
+-- ...
+-- ...
+-- Évaluation : Complètement fonctionnelle
+-- ...
+-- ...
+-- Réalisé par : Juliette Vincent
+-- =======================================================
+SELECT 
+-- =======================================================
+-- Requête # 3
+-- Objectif : Au choix.
+-- ...
+-- ...
+-- Évaluation : Complètement fonctionnelle
+-- ...
+-- ...
+-- Réalisé par : Juliette Vincent
+-- =======================================================
+SELECT 
+-- =======================================================
+
