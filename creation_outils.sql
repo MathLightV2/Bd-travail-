@@ -211,8 +211,76 @@ AS $$
 	END;
 $$;
 
-
 -- JULIETTE
+-- procedure : insertion dis_particulier aléatoire
+CREATE OR REPLACE PROCEDURE insert_rand_dis_particulier()
+LANGUAGE PLPGSQL
+AS $$
+    DECLARE 
+    _type           dis_particulier.type%TYPE;
+    _position       dis_particulier.position%TYPE;
+    _troncon        dis_particulier.troncon%TYPE;
+
+    BEGIN
+
+            FOR i IN 1..10 LOOP
+            SELECT select_rand_id('id_type_dis_par', 'type_dis_par') INTO _type;
+            SELECT (RANDOM()*100) INTO _position;
+            SELECT select_rand_id('id_troncon', 'troncon') INTO _troncon;
+
+            INSERT INTO dis_particulier(type, position, troncon)
+                    VALUES(_type, _position, _troncon);
+                    END LOOP;
+        END;
+$$;
+
+-- procedure : insertion lumiere aléatoire
+CREATE OR REPLACE PROCEDURE insert_rand_lumiere()
+LANGUAGE PLPGSQL
+AS $$
+    DECLARE
+     _forme			lumiere.forme%TYPE;
+    _couleur			lumiere.couleur%TYPE;
+    _mode		    lumiere.mode%TYPE;
+    _signalisation	lumiere.signalisation%TYPE;
+
+    BEGIN
+
+            FOR i IN 1..10 LOOP
+            SELECT select_rand_id('id_forme', 'forme') INTO _forme;
+            SELECT select_rand_id('id_couleur', 'couleur') INTO _couleur;
+            SELECT * FROM unnest(enum_range(NULL::mode)) ORDER BY random() LIMIT 1 INTO _mode;
+            SELECT select_rand_id('id_signalisation', 'signalisation') INTO _signalisation;
+
+            INSERT INTO lumiere(forme, couleur, mode, signalisation)
+                VALUES (_forme, _couleur, _mode, _signalisation);
+                END LOOP;
+        END;
+$$;
+
+-- procedure d'insertion lumiere
+CREATE PROCEDURE ajout_lumiere(
+    _forme			lumiere.forme%TYPE,
+    _couleur			lumiere.couleur%TYPE,
+    _mode		    lumiere.mode%TYPE,
+    _signalisation	lumiere.signalisation%TYPE)
+    LANGUAGE SQL
+    AS $$
+    INSERT INTO lumiere(forme, couleur, mode, signalisation)
+            VALUES(_forme, _couleur, _mode, _signalisation);
+$$;
+
+-- procedure d'insertion dis_particulier
+CREATE PROCEDURE ajout_dis_par(
+    _type           dis_particulier.type%TYPE,
+    _position       dis_particulier.position%TYPE,
+    _troncon        dis_particulier.troncon%TYPE)
+    LANGUAGE SQL
+    AS $$
+    INSERT INTO dis_particulier(type, position, troncon)
+        VALUES(_type, _position, _troncon)
+$$;
+
 -- Vue
 CREATE VIEW nbr_ins_emp AS
 SELECT employe.nom, COUNT(*) AS "Nombres dinspections"
