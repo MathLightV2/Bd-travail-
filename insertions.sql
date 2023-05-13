@@ -105,11 +105,10 @@ VALUES 	('acces_fauteuil'),
 		('radar');
 
 -- insertion dis_particulier JULIETTE
-INSERT INTO dis_particulier(type, position, troncon)
-VALUES
-    (1, 99.99, 2),
-    (2, 0.11, 5),
-    (3, 50.00, 7);
+ CALL ajout_dis_par(1, 100, 2);
+ CALL ajout_dis_par(2, 0, 5);
+ CALL ajout_dis_par(3, 50, 7);
+ CALL insert_rand_dis_particulier();
 		
  -- table couleur JULIETTE
 INSERT INTO couleur(nom, hex)
@@ -151,19 +150,18 @@ VALUES 	('ronde'),
 		('barre horizontale');
 		
 -- insertion lumiere JULIETTE	
-INSERT INTO lumiere (forme, couleur, mode, signalisation)
-VALUES
-    (1, 1, 'solide', 1),
-    (1, 2, 'solide', 1),
-    (1, 3, 'solide', 1),
-    (2, 1, 'contrôlé', 2),
-    (2, 2, 'contrôlé', 2),
-    (3, 3, 'intelligente', 2),
-    (4, 1, 'solide', 3),
-    (4, 2, 'solide', 3),
-    (4, 3, 'solide', 3),
-    (6, 4, 'clignotant', 4),
-    (5, 5, 'contrôlé', 5),
-    (7, 5, 'solide', 6),
-    (8, 3, 'solide', 7),
-    (9, 1, 'solide', 8);
+CALL ajout_lumiere(1, 1, 'solide', 1);
+CALL ajout_lumiere(1, 2, 'solide', 1);
+CALL ajout_lumiere(1, 3, 'solide', 1);
+CALL ajout_lumiere(2, 1, 'contrôlé', 2);
+CALL ajout_lumiere(2, 2, 'contrôlé', 2);
+CALL ajout_lumiere(3, 3, 'intelligente', 2);
+CALL ajout_lumiere(4, 1, 'solide', 3);
+CALL ajout_lumiere(4, 2, 'solide', 3);
+CALL ajout_lumiere(4, 3, 'solide', 3);
+CALL ajout_lumiere(6, 4, 'clignotant', 4);
+CALL ajout_lumiere(5, 5, 'contrôlé', 5);
+CALL ajout_lumiere(7, 5, 'solide', 6);
+CALL ajout_lumiere(8, 3, 'solide', 7);
+CALL ajout_lumiere(9, 1, 'solide', 8);
+CALL insert_rand_lumiere();
