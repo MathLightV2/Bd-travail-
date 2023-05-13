@@ -6,9 +6,9 @@
 DELETE FROM vehicule;
 INSERT INTO vehicule (marque, modele, date_aqui, immatriculation)
 VALUES
-('Ford', 'F-150', '2022-04-18', 'W68 BSA'),
-('Chevrolet', 'Silverado', '2022-10-28', 'S52 AGC'),
-('Toyota', 'Tacoma', '2023-02-05', '756 JWB');
+('Ford', 'F-150', '2022-04-18', 'W68BSA'),
+('Chevrolet', 'Silverado', '2022-10-28', 'S52AGC'),
+('Toyota', 'Tacoma', '2023-02-05', '756JWB');
 
 --INSERT intersection NOE
 DELETE FROM intersection;
