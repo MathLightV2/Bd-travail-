@@ -165,3 +165,13 @@ CALL ajout_lumiere(7, 5, 'solide', 6);
 CALL ajout_lumiere(8, 3, 'solide', 7);
 CALL ajout_lumiere(9, 1, 'solide', 8);
 CALL insert_rand_lumiere();
+
+--INSERT vehicule NOE
+INSERT INTO vehicule (marque, modele, date_aqui, immatriculation)
+VALUES
+('Ford', 'F-150', '2022-04-18', 'W68BSA'),
+('Chevrolet', 'Silverado', '2022-10-28', 'S52AGC'),
+('Toyota', 'Tacoma', '2023-02-05', '756JWB');
+
+-- insertion inspection NOE
+CALL insert_loop();
