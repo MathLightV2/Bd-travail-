@@ -3,7 +3,6 @@ DROP INDEX IF EXISTS idx_cali_emp ;
 CREATE INDEX idx_cali_emp
 ON calibration (employe);
 
-
 -- PROCEDURE mathis
 CREATE OR REPLACE PROCEDURE insert_calibration()
 LANGUAGE plpgsql
@@ -21,51 +20,43 @@ AS $$
 	profileur calibration.profileur%TYPE;
 	
 	BEGIN 
+		FOR i IN 1..50 LOOP
 	SELECT nextval('seq_cali_id') INTO id_calibration;
-	SELECT ('second', NOW() - (RAND() * interval '30 days')) INTO date_debut;
-	SELECT ('second', NOW() - (RAND() * interval '30 days')) INTO date_fin;
+	SELECT ('second', NOW() - (RANDOM() * interval '30 days')) INTO date_debut;
+	SELECT ('second', NOW() - (RANDOM() * interval '30 days')) INTO date_fin;
 	SELECT select_rand_id('id_employe','employe') INTO employe;
-	SELECT FLOOR(RAND()*(500 - 1)) + 1 INTO v1;
-	SELECT FLOOR(RAND()*(500 - 1)) + 1 INTO v2;
-	SELECT FLOOR(RAND()*(500 - 1)) + 1 INTO v3;
+	SELECT FLOOR(RANDOM()*(500 - 1)) + 1 INTO v1;
+	SELECT FLOOR(RANDOM()*(500 - 1)) + 1 INTO v2;
+	SELECT FLOOR(RANDOM()*(500 - 1)) + 1 INTO v3;
 	SELECT select_rand_id ('id_profileur','profileur');
 				  
 	-- ajoute les row			  
-	INSERT INTO calibration (
-	id_calibration,
-	date_debut,
-	date_fin,
-	employe,
-	v1,
-	v2,
-	v3,
-	profileur
-	) VALUES (
-		
-	id_calibration,
-	date_debut,
-	date_fin,
-	employe,
-	v1,
-	v2,
-	v3,
-	profileur
-	);
+		INSERT INTO calibration (
+			id_calibration,
+			date_debut,
+			date_fin,
+			employe,
+			v1,
+			v2,
+			v3,
+			profileur
+			) VALUES (
+			
+			id_calibration,
+			date_debut,
+			date_fin,
+			employe,
+			v1,
+			v2,
+			v3,
+			profileur
+			);
+		END LOOP;
 	END;
 
 $$;
 				  
 	
--- fonction mathis - loop pour l'insertion  
-				  
-CREATE OR REPLACE FUNCTION insert_loop_calibration()
-RETURNS VOID
-LANGUAGE plpgsql AS $$
-BEGIN
-    FOR i IN 1..50 LOOP -- 50 a changer
-        PERFORM insert_calibration();
-    END LOOP;
-END$$;
 
 -- ROMAIN FONCTIONS
 
