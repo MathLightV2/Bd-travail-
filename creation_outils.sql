@@ -3,6 +3,21 @@ DROP INDEX IF EXISTS idx_cali_emp ;
 CREATE INDEX idx_cali_emp
 ON calibration (employe);
 
+CREATE  FUNCTION genere_marque_random()
+RETURNS TEXT
+LANGUAGE plpgsql
+AS $$
+	DECLARE
+		marque_rand TEXT;
+	BEGIN
+		marque_rand := substr(MD5(random()::text), 1, 5);
+		RETURN marque_rand; 
+
+	END;
+$$;
+
+
+
 CREATE OR REPLACE PROCEDURE insert_rand_profileur()
 LANGUAGE plpgsql
 AS $$
