@@ -3,7 +3,7 @@ DROP INDEX IF EXISTS idx_cali_emp ;
 CREATE INDEX idx_cali_emp
 ON calibration (employe);
 
-CREATE  FUNCTION genere_marque_random()
+CREATE OR REPLACE FUNCTION genere_marque_random()
 RETURNS TEXT
 LANGUAGE plpgsql
 AS $$
