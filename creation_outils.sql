@@ -3,7 +3,7 @@ DROP INDEX IF EXISTS idx_cali_emp ;
 CREATE INDEX idx_cali_emp
 ON calibration (employe);
 
-CREATE OR REPLACE FUNCTION genere_marque_random()
+CREATE FUNCTION genere_marque_random()
 RETURNS TEXT
 LANGUAGE plpgsql
 AS $$
@@ -18,7 +18,7 @@ $$;
 
 
 
-CREATE OR REPLACE PROCEDURE insert_rand_profileur()
+CREATE PROCEDURE insert_rand_profileur()
 LANGUAGE plpgsql
 AS $$
 -- variable 
@@ -46,7 +46,6 @@ $$;
 
 
 -- PROCEDURE mathis
-DROP PROCEDURE IF EXISTS insert_calibration();
 CREATE PROCEDURE insert_calibration()
 LANGUAGE plpgsql
 AS $$
@@ -197,7 +196,7 @@ CREATE PROCEDURE ajout_panneau(
 	$$;	
 
 
-CREATE OR REPLACE PROCEDURE insert_rand_panneau()
+CREATE PROCEDURE insert_rand_panneau()
 LANGUAGE plpgsql
 AS $$
  -- varaible
@@ -219,7 +218,7 @@ AS $$
 	END;
 $$;
 
-CREATE OR REPLACE PROCEDURE insert_rand_signalisation()
+CREATE PROCEDURE insert_rand_signalisation()
 LANGUAGE plpgsql
 AS $$
  -- varaible
@@ -245,7 +244,7 @@ $$;
 
 -- JULIETTE
 -- procedure : insertion dis_particulier aléatoire
-CREATE OR REPLACE PROCEDURE insert_rand_dis_particulier()
+CREATE PROCEDURE insert_rand_dis_particulier()
 LANGUAGE PLPGSQL
 AS $$
     DECLARE 
@@ -267,7 +266,7 @@ AS $$
 $$;
 
 -- procedure : insertion lumiere aléatoire
-CREATE OR REPLACE PROCEDURE insert_rand_lumiere()
+CREATE PROCEDURE insert_rand_lumiere()
 LANGUAGE PLPGSQL
 AS $$
     DECLARE
@@ -360,12 +359,6 @@ SELECT (salaire *  32 * 4 * 12) FROM employe WHERE nom_emp = nom;
 $$;
 
 ----------------------------------------------------------------------------------
-
--- DROP PROCEDURE IF EXISTS insert_inspection;
--- DROP TRIGGER IF EXISTS insert_nom_fichier_donnees on inspection;
--- DROP VIEW IF EXISTS inspection_fees;
--- DROP INDEX IF EXISTS inspect_debut;
--- DROP FUNCTION IF EXISTS generate_nom_fichier_donnees, select_rand_id, insert_loop, cout_vehicule;
 
 --FUNCTION NOE - calcule le cout d'un vehicule selon le nombre de km
 CREATE FUNCTION cout_vehicule(id_vehicule INTEGER, distance_km INTEGER) RETURNS NUMERIC AS $$
