@@ -20,9 +20,9 @@ CALL ajout_employe('Webster', 'Patrick', 'H', '654321789', 220.3, '2023-04-01', 
 
 -- insertion profileur MATHIS
 INSERT INTO profileur (marque,no_serie,date_fab,date_aqui)
-VALUES 	('Solinst','485321','2008-09-14','2018-10-19'),
-		('Dektak','972459','2014-08-22','2019-06-07'),
-		('Normandin','442785','2007-05-17','2016-08-06');
+VALUES 	('Solinst','485321QWERFGTHYT','2008-09-14','2018-10-19'),
+		('Dektak','484321QWFRFGTHBT','2014-08-22','2019-06-07'),
+		('Normandin','486321QWEGFGTLYT','2007-05-17','2016-08-06');
 CALL insert_rand_profileur();		
 		
 -- insertion calibration MATHIS
