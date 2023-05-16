@@ -34,11 +34,11 @@ AS $$
 		FOR i IN 1..10 LOOP
 			SELECT genere_marque_random() INTO _marque;
 			SELECT FLOOR(RANDOM()*(10000 - 1000)) + 1000 INTO _no_serie;
-			SELECT ('second', NOW() - (RANDOM() * interval '30 days')) INTO _date_fab;
-			SELECT ('second', NOW() - (RANDOM() * interval '30 days')) INTO _date_aqui;
+			SELECT date_trunc('second', NOW() - (RANDOM() * interval '30 days')) INTO _date_fab;
+			SELECT date_trunc('second', NOW() - (RANDOM() * interval '30 days')) INTO _date_aqui;
 		
-		INSERT INTO profileur (marque,no_serie,date_fab,date_aqui)
-			VALUES (_marque,_no_serie,_date_fab,_date_aqui);
+			INSERT INTO profileur (marque,no_serie,date_fab,date_aqui)
+				VALUES (_marque,_no_serie,_date_fab,_date_aqui);
 
 		END LOOP;
 	END;
@@ -46,7 +46,7 @@ $$;
 
 
 -- PROCEDURE mathis
-CREATE OR REPLACE PROCEDURE insert_calibration()
+CREATE PROCEDURE insert_calibration()
 LANGUAGE plpgsql
 AS $$
 
@@ -63,36 +63,36 @@ AS $$
 	
 	BEGIN 
 		FOR i IN 1..50 LOOP
-	SELECT nextval('seq_cali_id') INTO id_calibration;
-	SELECT ('second', NOW() - (RANDOM() * interval '30 days')) INTO date_debut;
-	SELECT ('second', NOW() - (RANDOM() * interval '30 days')) INTO date_fin;
-	SELECT select_rand_id('id_employe','employe') INTO employe;
-	SELECT FLOOR(RANDOM()*(500 - 1)) + 1 INTO v1;
-	SELECT FLOOR(RANDOM()*(500 - 1)) + 1 INTO v2;
-	SELECT FLOOR(RANDOM()*(500 - 1)) + 1 INTO v3;
-	SELECT select_rand_id ('id_profileur','profileur');
-				  
-	-- ajoute les row			  
-		INSERT INTO calibration (
-			id_calibration,
-			date_debut,
-			date_fin,
-			employe,
-			v1,
-			v2,
-			v3,
-			profileur
-			) VALUES (
-			
-			id_calibration,
-			date_debut,
-			date_fin,
-			employe,
-			v1,
-			v2,
-			v3,
-			profileur
-			);
+			SELECT nextval('seq_cali_id') INTO id_calibration;
+			SELECT date_trunc('second', NOW() - (RANDOM() * interval '30 days')) INTO date_debut;
+			SELECT date_trunc('second', NOW() - (RANDOM() * interval '30 days')) INTO date_fin;
+			SELECT select_rand_id('id_employe','employe') INTO employe;
+			SELECT FLOOR(RANDOM()*(500 - 1)) + 1 INTO v1;
+			SELECT FLOOR(RANDOM()*(500 - 1)) + 1 INTO v2;
+			SELECT FLOOR(RANDOM()*(500 - 1)) + 1 INTO v3;
+			SELECT select_rand_id ('id_profileur','profileur') INTO profileur;
+
+			-- ajoute les row			  
+				INSERT INTO calibration (
+					id_calibration,
+					date_debut,
+					date_fin,
+					employe,
+					v1,
+					v2,
+					v3,
+					profileur
+					) VALUES (
+
+					id_calibration,
+					date_debut,
+					date_fin,
+					employe,
+					v1,
+					v2,
+					v3,
+					profileur
+					);
 		END LOOP;
 	END;
 
@@ -100,7 +100,6 @@ $$;
 				  
 
 -- ROMAIN FONCTIONS
-
 CREATE FUNCTION id_type_pan(
 	_nom type_pan.nom%TYPE)
 	RETURNS INT
@@ -476,7 +475,7 @@ $$;
 CREATE PROCEDURE insert_loop()
 LANGUAGE plpgsql AS $$
 BEGIN
-    FOR i IN 1..50 LOOP -- 50 a changer
+    FOR i IN 1..100 LOOP -- 50 a changer
         CALL insert_inspection();
     END LOOP;
 END$$;
