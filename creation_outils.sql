@@ -16,6 +16,19 @@ AS $$
 	END;
 $$;
 
+CREATE OR REPLACE FUNCTION genere_num_serie_random()
+RETURNS TEXT
+LANGUAGE plpgsql
+AS $$
+	DECLARE
+		num_rand TEXT;
+	BEGIN
+		num_rand := substr(MD5(random()::text), 1, 16);
+		RETURN num_rand; 
+
+	END;
+$$;
+
 
 
 CREATE OR REPLACE PROCEDURE insert_rand_profileur()
