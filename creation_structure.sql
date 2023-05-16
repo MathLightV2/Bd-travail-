@@ -118,7 +118,7 @@ CREATE TABLE lumiere(
 CREATE TABLE couleur(
 	id_couleur		SERIAL,
 	nom				VARCHAR(32)	NOT NULL,
-	hex				VARCHAR(6)	NOT NULL,
+	hex				CHAR(6)		NOT NULL,
 	
 	CONSTRAINT pk_couleur PRIMARY KEY(id_couleur),
 	CONSTRAINT cc_couleur_hex CHECK(hex ~* '^[0-9A-F]{6}$')
@@ -148,7 +148,7 @@ CREATE TABLE profileur(
 	
 	id_profileur	SERIAL,
 	marque			VARCHAR(32)		NOT NULL,
-	no_serie		VARCHAR(16)		NOT NULL,
+	no_serie		CHAR(16)		NOT NULL,
 	date_fab		DATE,
 	date_aqui		DATE,
 	
