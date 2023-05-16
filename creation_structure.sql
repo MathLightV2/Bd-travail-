@@ -148,7 +148,7 @@ CREATE TABLE profileur(
 	
 	id_profileur	SERIAL,
 	marque			VARCHAR(32)		NOT NULL,
-	no_serie		VARCHAR(16)		NOT NULL,
+	no_serie		CHAR(16)		NOT NULL,
 	date_fab		DATE,
 	date_aqui		DATE,
 	
