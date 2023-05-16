@@ -35,7 +35,7 @@ AS $$
 			SELECT genere_marque_random() INTO _marque;
 			SELECT FLOOR(RANDOM()*(10000 - 1000)) + 1000 INTO _no_serie;
 			SELECT date_trunc('second', NOW() - (RANDOM() * interval '30 days')) INTO _date_fab;
-			SELECT date_trunc('second', NOW() - (RANDOM() * interval '30 days')) INTO _date_aqui;
+			SELECT date_trunc('second', _date_fab + (RANDOM() * interval '10 days')) INTO _date_aqui;
 		
 			INSERT INTO profileur (marque,no_serie,date_fab,date_aqui)
 				VALUES (_marque,_no_serie,_date_fab,_date_aqui);
@@ -65,7 +65,7 @@ AS $$
 		FOR i IN 1..50 LOOP
 			SELECT nextval('seq_cali_id') INTO id_calibration;
 			SELECT date_trunc('second', NOW() - (RANDOM() * interval '30 days')) INTO date_debut;
-			SELECT date_trunc('second', NOW() - (RANDOM() * interval '30 days')) INTO date_fin;
+			SELECT date_trunc('second', date_debut + (RANDOM() * interval '10 minutes')) INTO date_fin;
 			SELECT select_rand_id('id_employe','employe') INTO employe;
 			SELECT FLOOR(RANDOM()*(500 - 1)) + 1 INTO v1;
 			SELECT FLOOR(RANDOM()*(500 - 1)) + 1 INTO v2;
@@ -436,7 +436,7 @@ AS $$
         -- utilise le trigger
         --SELECT generate_nom_fichier_donnees() INTO nom_fichier; PAS SUR
         SELECT date_trunc('second', NOW() - (Random() * interval '30 days')) INTO date_d;
-        SELECT date_trunc('second', date_d - (Random() * interval '30 days')) INTO date_f;
+        SELECT date_trunc('second', date_d + (Random() * interval '12 hours')) INTO date_f;
         SELECT select_rand_id('id_employe', 'employe') INTO conducteur;
         SELECT select_rand_id('id_vehicule', 'vehicule') INTO vehicule;
         SELECT FLOOR(Random()*(250000 - 1)) + 1 INTO km_debut;
