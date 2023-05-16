@@ -177,3 +177,5 @@ VALUES
 
 -- insertion inspection NOE
 CALL insert_loop();
+-- insertion inspection_troncon NOE
+CALL insert_rand_inspection_troncon();
