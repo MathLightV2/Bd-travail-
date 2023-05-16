@@ -1,5 +1,4 @@
 -- INDEX mathis
-DROP INDEX IF EXISTS idx_cali_emp ;
 CREATE INDEX idx_cali_emp
 ON calibration (employe);
 
@@ -56,19 +55,16 @@ AS $$
 $$;
 				  
 	
--- fonction mathis - loop pour l'insertion  
-				  
-CREATE OR REPLACE FUNCTION insert_loop_calibration()
-RETURNS VOID
+-- fonction mathis - loop pour l'insertion  				  
+CREATE OR REPLACE PROCEDURE insert_loop_calibration()
 LANGUAGE plpgsql AS $$
 BEGIN
     FOR i IN 1..50 LOOP -- 50 a changer
-        PERFORM insert_calibration();
+        CALL insert_calibration();
     END LOOP;
 END$$;
 
 -- ROMAIN FONCTIONS
-
 CREATE FUNCTION id_type_pan(
 	_nom type_pan.nom%TYPE)
 	RETURNS INT

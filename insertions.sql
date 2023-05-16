@@ -35,6 +35,7 @@ VALUES     (nextval('seq_cali_id'),'2020-11-24 10:10:53','2010-11-24 10:10:53',i
         (nextval('seq_cali_id'),'2021-11-24 10:10:53','2021-11-24 10:08:53',id_employe('Fuoco-Binette','Romain'),234.03,250.07,250.08,(SELECT id_profileur FROM profileur WHERE marque ='Normandin')),
         (nextval('seq_cali_id'),'2018-11-24 10:10:53','2018-11-24 10:08:53',id_employe('Fuoco-Binette','Romain'),245.03,250.07,250.08,(SELECT id_profileur FROM profileur WHERE marque ='Normandin')),
         (nextval('seq_cali_id'),'2023-11-24 10:10:53','2023-11-24 10:11:53',id_employe('Fuoco-Binette','Romain'),150.05,150.05,150.05,(SELECT id_profileur FROM profileur WHERE marque ='Normandin'));
+CALL insert_loop_calibration();
 
 -- insertion rue JULIETTE
 INSERT INTO rue(nom)
