@@ -46,7 +46,7 @@ AS $$
 		-- ajoute les row
 		FOR i IN 1..10 LOOP
 			SELECT genere_marque_random() INTO _marque;
-			SELECT FLOOR(RANDOM()*(10000 - 1000)) + 1000 INTO _no_serie;
+			SELECT genere_num_serie_random() INTO _no_serie;
 			SELECT date_trunc('second', NOW() - (RANDOM() * interval '30 days')) INTO _date_fab;
 			SELECT date_trunc('second', NOW() - (RANDOM() * interval '30 days')) INTO _date_aqui;
 		
