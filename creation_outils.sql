@@ -46,6 +46,7 @@ $$;
 
 
 -- PROCEDURE mathis
+DROP PROCEDURE IF EXISTS insert_calibration();
 CREATE PROCEDURE insert_calibration()
 LANGUAGE plpgsql
 AS $$
