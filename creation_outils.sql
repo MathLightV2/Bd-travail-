@@ -372,6 +372,25 @@ SELECT (salaire *  32 * 4 * 12) FROM employe WHERE nom_emp = nom;
 $$;
 
 ----------------------------------------------------------------------------------
+- PROCEDURE NOE
+CREATE OR REPLACE PROCEDURE insert_rand_inspection_troncon()
+LANGUAGE PLPGSQL
+AS $$
+    DECLARE
+     _inspection   inspection_troncon.inspection%TYPE;
+     _troncon       inspection_troncon.troncon%TYPE;
+
+    BEGIN
+
+            FOR i IN 1..100 LOOP
+				FOR j IN 1..10 LOOP
+	            INSERT INTO inspection_troncon(inspection, troncon)
+	            VALUES(i,j);
+			END LOOP;
+			END LOOP;
+        END;
+$$;
+
 
 --FUNCTION NOE - calcule le cout d'un vehicule selon le nombre de km
 CREATE FUNCTION cout_vehicule(id_vehicule INTEGER, distance_km INTEGER) RETURNS NUMERIC AS $$
@@ -499,7 +518,6 @@ INNER JOIN employe e ON i.conducteur = e.id_employe;
 
 --INDEX NOE - sort les inspections par date_debut
 CREATE INDEX inspect_debut ON inspection (date_debut);
-
 
 
 -- -- Declencheur :
