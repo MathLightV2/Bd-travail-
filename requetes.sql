@@ -56,7 +56,7 @@ GROUP BY v.immatriculation;
 -- Requête #3
 -- Objectif : Retourne le nombre en ordre décroisant  des différentes 
 -- 		combinaisons de forme et de couleur se situant sur les
---		différent tronçons
+--		différent tronçons ( doit en avoir plus que 1) et 5 max
 -- Évaluation : Fonctionnel
 -- Réalisé par : Mathis
 -- Aidé par :
@@ -70,8 +70,9 @@ SELECT form.nom AS nom_forme, cou.nom AS nom_couleur, COUNT(*) AS nombre_fois
 	INNER JOIN couleur AS  cou 
 		ON lum.couleur = cou.id_couleur
 GROUP BY lum.forme, lum.couleur, form.nom, cou.nom
+HAVING COUNT(*) > 1
 ORDER BY nombre_fois DESC
-LIMIT 3;
+LIMIT 5;
 -- =======================================================
 
 --JULIETTE
