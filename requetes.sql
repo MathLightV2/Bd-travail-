@@ -79,8 +79,79 @@ LIMIT 3;
 
 
 
-
 -- NOÉ
+-- =======================================================
+-- Requête #1
+-- Objectif : Donner le nombre d’inspections que chaque employé a fait.
+-- Explication : La requête combine premièrement le nom et le prénom pour les mettres dans la même colonne 'employe'	(SELECT)	
+-- 				 on compte ensuite le nombre de fois (COUNT(*)) que cet employé apparait dans les inspections (FROM inspection ins)
+--				 le JOIN permet de récupérer les employés qui apparaissent soit comme conducteur ou opérateur d'une inspection, pour les identifier.
+-- Évaluation : Fonctionnel
+-- 
+-- 
+-- Réalisé par : Noé
+-- Aidé par :
+-- =======================================================
+SELECT e.nom || ' ' || e.prenom AS employe, COUNT(*) AS nombre_inspections
+FROM inspection ins
+JOIN employe e ON ins.conducteur = e.id_employe OR ins.operateur = e.id_employe
+GROUP BY e.nom, e.prenom
+ORDER BY nombre_inspections DESC;
+-- =======================================================
+
+
+-- =======================================================
+-- Requête #2
+-- Objectif : Donner la liste des profileurs laser ayant besoin d’être calibrés.
+-- Explication : la requête séletionne toutes les colonnes de la table 'profileur' si la formule du WHERE est vrai.
+--				 les données sont prisent de la table 'calibration' et joins a la table 'profileur' pour les afficher dans les colonnes.
+-- 
+-- Évaluation : Fonctionnel
+-- 
+-- 
+-- Réalisé par : Noé
+-- Aidé par :
+-- =======================================================
+SELECT p.*
+FROM calibration c
+JOIN profileur p ON c.profileur = p.id_profileur
+WHERE SQRT(ABS(((c.v1 * c.v2) / POWER(c.v3, 2)) - 1)) <= 1 / POWER(PI(), 2);
+-- ======================================================= 
+
+
+-- =======================================================
+-- Requête #3
+-- Objectif :  Donne les 5 inspections les plus récentes qui ont 
+--			   un nombre de km parcouru plus élevé que la moyenne des km parcourus,
+--			   en donnant aussi le nas de l'employé conducteur et le id du véhicule utilisé.	
+-- Explication : Sélectionne le id_inspection, km_parcourus, date_debut, le nas de l'employe et id du véhicule
+--				 en joignant les tables 'employe', 'inspection' et 'vehicule' avec les clées étrangères. 
+--				 le résultat est aussi groupé par le nas, le id_inspection, id_vehicule et la date_debut pour ne pas faire de calculs inutiles 
+--				 et de filtrer les groupes par rapport au critère du HAVING, qui sélectionne seulement les inspections qui ont un nombre de km plus élevé que ceux
+--				 de la moyenne. les résultats sont limités à 5 et en ordre de date
+--				 
+--				 
+-- 
+-- Évaluation : Fonctionnel
+-- 
+-- 
+-- Réalisé par : Noé
+-- Aidé par :
+-- =======================================================
+SELECT i.id_inspection, i.date_debut, (i.km_fin_inspect - i.km_debut_inspect) AS km_parcourus, e.nas AS conducteur_nas, v.id_vehicule
+FROM employe e
+JOIN inspection i ON e.id_employe = i.conducteur
+JOIN vehicule v ON i.vehicule = v.id_vehicule
+GROUP BY e.nas, i.id_inspection, v.id_vehicule, i.date_debut
+HAVING (i.km_fin_inspect - i.km_debut_inspect) > (
+    SELECT AVG(km_fin_inspect - km_debut_inspect)
+    FROM inspection) 
+ORDER BY i.date_debut DESC
+LIMIT 5;
+-- =======================================================
+
+
+
 
 -- MATHIS
 
