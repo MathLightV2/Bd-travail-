@@ -69,8 +69,21 @@ SELECT form.nom AS nom_forme, cou.nom AS nom_couleur, COUNT(*) AS nombre_fois
 		ON lum.forme = form.id_forme
 	INNER JOIN couleur AS  cou 
 		ON lum.couleur = cou.id_couleur
+WHERE EXISTS (
+	SELECT 1
+	FROM lumiere AS lum2
+	INNER JOIN signalisation AS sig2
+		ON lum2.signalisation = sig2.id_signalisation
+	INNER JOIN forme form2 
+		ON lum2.forme = form2.id_forme
+	INNER JOIN couleur AS  cou2 
+		ON lum2.couleur = cou2.id_couleur
+	WHERE form2.nom = form.nom
+	AND cou2.nom = cou.nom
+	GROUP BY form2.nom, cou2.nom
+	HAVING COUNT(*) > 1
+)
 GROUP BY lum.forme, lum.couleur, form.nom, cou.nom
-HAVING COUNT(*) > 1
 ORDER BY nombre_fois DESC
 LIMIT 5;
 -- =======================================================
