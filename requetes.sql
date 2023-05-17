@@ -12,7 +12,73 @@
 votre requête
 -- =======================================================
 
+
 -- ROMAIN
+-- =======================================================
+-- Requête #1
+-- Objectif : Donner la liste des employés : nom, prénom, poste, nom du département, ancienneté
+--			  (en année et mois), leur salaire annuel (considérant qu’ils travaillent 35 heures par
+--			  semaine et 52 semainespar année) et leur salaire annuel augmenté de 15%.
+-- Évaluation : Fonctionnel
+-- Réalisé par : Romain
+-- Aidé par :
+-- =======================================================
+SELECT emp.nom "Nom", emp.prenom "Prénom", poste.titre "Poste", dep.nom "Département"
+		,TO_CHAR(AGE(CURRENT_DATE, emp.date_embauche), 'YY "ans et" MM "mois"') "Ancienneté"
+		,salaire_annuel(emp.nas) "Salaire annuel", (salaire_annuel(emp.nas)*1.15)::NUMERIC(8,2) "Salaire annuel augementé"
+FROM employe AS emp
+	INNER JOIN departement AS dep ON dep.id_departement = emp.departement
+	INNER JOIN poste ON poste.id_poste = emp.poste;
+-- =======================================================
+
+
+
+-- =======================================================
+-- Requête #2
+-- Objectif : Pour chacune des inspections, on désire savoir quels ont été les frais associés (vous
+--			  devez tenir compte du temps passé pour les deux employés lors de l’inspection et des
+--			  coûts d’exploitation du véhicule à 4.79$ par kilomètre.). Les met en ordre de la plus cher a la moins cher
+-- Évaluation : Fonctionnel
+-- Réalisé par : Romain
+-- Aidé par : 
+-- =======================================================
+SELECT r.*, r."Salaire conducteur ($)" + r."Salaire opérateur ($)" + r."Coût des déplacements ($)" AS "Total ($)"
+FROM (SELECT rap."No. Inspection"
+			,transform_heures(rap."Date et heure de début", rap."Date et heure de fin") AS "temps d''inspection (H)"
+			,(transform_heures(rap."Date et heure de début", rap."Date et heure de fin") * rap."Salaire horaire du conducteur")::NUMERIC(6,2) AS "Salaire conducteur ($)"
+			,(transform_heures(rap."Date et heure de début", rap."Date et heure de fin") * rap."Salaire horaire de l''opérateur")::NUMERIC(6,2) AS "Salaire opérateur ($)"
+			,(rap."Nb de kilometre parcouru" * 4.79)::NUMERIC(6,2) "Coût des déplacements ($)"
+		FROM rapport_inspection AS rap ) AS r
+ORDER BY "Total ($)" DESC
+-- =======================================================
+
+
+
+-- =======================================================
+-- Requête #3
+-- Objectif : Sort un rapport des 3 employés ayant la plus haute moyenne de Km parcouruentant que conducteur
+--			  en ordre décroisant et ayant un salaire supérieur a la moyenne salarial de leur département
+-- Évaluation : Fonctionnel
+-- Réalisé par : Romain
+-- Aidé par :
+-- =======================================================
+SELECT AVG(ins.km_fin_inspect - ins.km_debut_inspect)::NUMERIC(5,2) "Moyenne km", con.nom || ', ' || con.prenom AS "Conducteur"
+		,po.titre "Poste", con.salaire, dep.nom "Département"
+FROM inspection AS ins
+	INNER JOIN employe AS con ON con.id_employe = ins.conducteur
+	INNER JOIN poste AS po ON po.id_poste = con.poste
+	INNER JOIN departement AS dep ON dep.id_departement = con.departement
+GROUP BY con.nom, con.prenom, po.titre, con.salaire, con.departement, dep.nom
+HAVING con.salaire >= (SELECT AVG(emp.salaire)
+					 FROM employe as emp
+					 WHERE emp.departement = con.departement )
+ORDER BY "Moyenne km" DESC
+LIMIT 3;
+-- =======================================================
+
+
+
+
 
 -- NOÉ
 
