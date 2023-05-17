@@ -112,7 +112,7 @@ AS $$
 $$;
 				  
 
--- ROMAIN FONCTIONS
+-- ========================= ROMAIN Fonctions ============================================================================
 CREATE FUNCTION id_type_pan(
 	_nom type_pan.nom%TYPE)
 	RETURNS INT
@@ -153,6 +153,15 @@ CREATE FUNCTION id_employe(
 	AS $$
 		SELECT id_employe FROM employe WHERE (_nom = nom) AND (_prenom = prenom)
 	$$;
+	
+CREATE FUNCTION transform_heures(
+	_debut	 	TIMESTAMP
+	,_fin		TIMESTAMP)
+	RETURNS NUMERIC(4,2)
+	LANGUAGE SQL
+	AS $$
+		SELECT 	((EXTRACT(hour FROM (_fin - _debut))*60 + EXTRACT(minutes FROM (_fin - _debut)))/60)::NUMERIC(4,2)
+	$$;
 
 --version révisé par romain utilisation d'un query_str car dans la version précédente le compilateur considérait
 --table_nom comme le nom de table et non pas le contenu de la varible 
@@ -171,8 +180,10 @@ AS $$
         RETURN Rand_id;
     END;
 $$;
+-- ========================================================================================================================
 
--- ROMAIN PROCÉDURES 
+
+-- ========================= ROMAIN PROCÉDURES ============================================================================
 CREATE PROCEDURE ajout_employe(
 	nom				employe.nom%TYPE
 	,prenom			employe.prenom%TYPE
@@ -244,7 +255,7 @@ AS $$
 		-- ajoute les row			  
 		FOR i IN 1..50 LOOP 
 			-- sélection d'une valeur random du ENUM orientation 
-			-- enum_range retourne un array de valeurs et unnest les met dans un tableau (rows)
+			-- enum_range retourne un array des valeurs du ENUM et unnest les met dans un tableau (rows)
 			SELECT * FROM unnest(enum_range(NULL::orientation)) ORDER BY random() LIMIT 1 INTO _orientation;
 			SELECT (RANDOM()*100) INTO _position;
 			SELECT select_rand_id('id_troncon','troncon') INTO _troncon;
@@ -254,6 +265,10 @@ AS $$
 		END LOOP;	
 	END;
 $$;
+-- ===================================================================================================================
+
+
+
 
 -- JULIETTE
 -- procedure : insertion dis_particulier aléatoire
@@ -361,24 +376,22 @@ $$;
 
 -- Fonction :
 -- Trouver le salaire total annuel d'un employe
-CREATE FUNCTION salaire_total_emp(
-salaire_emp employe.salaire%TYPE,
-nom_emp employe.nom%TYPE
-)
-RETURNS NUMERIC(5,2)
-LANGUAGE SQL
-AS $$
-SELECT (salaire *  32 * 4 * 12) FROM employe WHERE nom_emp = nom;
-$$;
+CREATE FUNCTION salaire_annuel(
+	_nas	 employe.nas%TYPE)
+	RETURNS NUMERIC(8,2)
+	LANGUAGE SQL
+	AS $$
+	SELECT (salaire *  35 * 52)::NUMERIC(8,2) FROM employe WHERE _nas = nas;
+	$$;
 
 ----------------------------------------------------------------------------------
-- PROCEDURE NOE
+--PROCEDURE NOE
 CREATE OR REPLACE PROCEDURE insert_rand_inspection_troncon()
 LANGUAGE PLPGSQL
 AS $$
     DECLARE
      _inspection   inspection_troncon.inspection%TYPE;
-     _troncon       inspection_troncon.troncon%TYPE;
+     _troncon      inspection_troncon.troncon%TYPE;
 
     BEGIN
 
@@ -466,7 +479,7 @@ AS $$
         SELECT select_rand_id('id_employe', 'employe') INTO conducteur;
         SELECT select_rand_id('id_vehicule', 'vehicule') INTO vehicule;
         SELECT FLOOR(Random()*(250000 - 1)) + 1 INTO km_debut;
-        SELECT FLOOR(Random()*(500000 - 250000)) + 250000 INTO km_fin;
+        SELECT km_debut + FLOOR(Random() * 250) + 50 INTO km_fin;
         SELECT select_rand_id('id_profileur', 'profileur') INTO profileur;
         SELECT select_rand_id('id_employe', 'employe') INTO operateur;
         SELECT 'x:\' INTO chemin_fichier;
@@ -506,6 +519,7 @@ BEGIN
     END LOOP;
 END$$;
 
+
 --VIEW NOE - donne le cout total d'une inspection
 CREATE VIEW inspection_fees AS 
 SELECT 
@@ -515,24 +529,3 @@ SELECT
   (e.salaire * EXTRACT(hour FROM (i.date_fin - i.date_debut))) + cout_vehicule(i.vehicule, (i.km_fin_inspect - i.km_debut_inspect)) AS total_fee
 FROM inspection i 
 INNER JOIN employe e ON i.conducteur = e.id_employe;
-
---INDEX NOE - sort les inspections par date_debut
-CREATE INDEX inspect_debut ON inspection (date_debut);
-
-
--- -- Declencheur :
--- -- Le salaire ne doit pas depasser 250$
--- CREATE FUNCTION max_salaire()
--- RETURNS TRIGGER
--- LANGUAGE PLPGSQL
--- AS $$
--- BEGIN
--- IF NEW.salaire > 250 THEN
--- RAISE EXCEPTION 'Le salaire ne peut pas depasser 250$';
--- END IF;
--- RETURN NEW;
--- END$$;
--- -- Trigger :
--- CREATE TRIGGER salaire_max ON employe
--- FOR EACH ROW
--- EXECUTE FUNCTION max_salaire();

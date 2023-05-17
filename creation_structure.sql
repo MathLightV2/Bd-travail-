@@ -2,12 +2,14 @@ DROP VIEW IF EXISTS rapport_inspection, inspection_fees, nbr_ins_emp;
 
 DROP TRIGGER IF EXISTS insert_nom_fichier_donnees on inspection;
 
-DROP FUNCTION IF EXISTS id_type_pan, id_dis_pan, id_poste, id_departement, id_employe, salaire_total_emp 
-						,select_rand_id, cout_vehicule, generate_nom_fichier_donnees;
+DROP FUNCTION IF EXISTS id_type_pan, id_dis_pan, id_poste, id_departement, id_employe, salaire_annuel 
+						,select_rand_id, cout_vehicule, generate_nom_fichier_donnees, genere_marque_random
+						,transform_heures;
 						
 DROP PROCEDURE IF EXISTS ajout_employe, ajout_signalisation, ajout_panneau, ajout_troncon, insert_calibration
 						,insert_rand_panneau, insert_rand_signalisation, ajout_lumiere, ajout_dis_par
-						,insert_inspection, insert_rand_dis_particulier, insert_rand_lumiere, insert_loop;
+						,insert_inspection, insert_rand_dis_particulier, insert_rand_lumiere, insert_loop
+						,insert_rand_profileur;
 
 ALTER TABLE IF EXISTS calibration DROP CONSTRAINT IF EXISTS fk_cal_emp;
 ALTER TABLE IF EXISTS calibration DROP CONSTRAINT IF EXISTS fk_cal_pro;
@@ -349,7 +351,7 @@ CREATE SEQUENCE seq_insp_nom_fich START WITH 20 INCREMENT BY 1;
 -- vue ROMAIN : 
 -- rapport d'inspection
 CREATE VIEW rapport_inspection AS
-	SELECT 	ins.date_debut "Date et heure de début",  ins.date_fin "Date et heure de fin"
+	SELECT 	ins.id_inspection "No. Inspection",ins.date_debut "Date et heure de début",  ins.date_fin "Date et heure de fin"
 			,con.nom || ', ' || con.prenom "Nom du conducteur", con.salaire "Salaire horaire du conducteur"
 			,v.marque || ' ' || v.modele || ', ' || v.immatriculation "Informations du véhicule utilisé"
 			,ins.km_debut_inspect "Kilomètrage au début de l''inspection", ins.km_fin_inspect "Kilomètrage fin de l''inspection"
@@ -362,8 +364,10 @@ CREATE VIEW rapport_inspection AS
 	INNER JOIN vehicule AS v ON v.id_vehicule = ins.vehicule
 	INNER JOIN profileur AS pro ON pro.id_profileur = ins.profileur
 	ORDER BY ins.date_debut;
+	
 
-	--SELECT * FROM rapport_inspection;
 -- index ROMAIN
 CREATE INDEX idx_calibration ON calibration(date_debut);
 
+--INDEX NOE - sort les inspections par date_debut
+CREATE INDEX inspect_debut ON inspection (date_debut);
