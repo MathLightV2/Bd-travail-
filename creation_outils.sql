@@ -530,7 +530,3 @@ CREATE VIEW vue_inspection_vehicule AS
 SELECT ins.id_inspection, ins.date_debut, ins.date_fin, v.marque, v.modele, v.immatriculation
 FROM inspection ins
 JOIN vehicule v ON ins.vehicule = v.id_vehicule;
-
-
---INDEX NOE - sort les inspections par date_debut
-CREATE INDEX inspect_debut ON inspection (date_debut);
