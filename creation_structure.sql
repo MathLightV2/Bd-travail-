@@ -79,14 +79,14 @@ CREATE TABLE rue(
 );
 -- TABLE troncon JULIETTE	
 CREATE TABLE troncon(
-	id_troncon				SERIAL,
-	rue						VARCHAR(32)		NOT NULL,
+	id_troncon			SERIAL,
+	rue				INTEGER				NOT NULL,
 	debut_intersection		INTEGER,
 	fin_intersection		INTEGER,
-	longueur				NUMERIC(6,2)	NOT NULL,
-	limite					INT				NOT NULL,
-	nb_voie					INT				NOT NULL DEFAULT 1,
-	pavage					PAVAGE			NOT NULL,
+	longueur			NUMERIC(6,2)			NOT NULL,
+	limite				INT				NOT NULL,
+	nb_voie				INT				NOT NULL DEFAULT 1,
+	pavage				PAVAGE				NOT NULL,
 	
 	CONSTRAINT pk_troncon PRIMARY KEY(id_troncon),
 	CONSTRAINT cc_troncon_longueur CHECK(longueur >= 0.0 AND longueur <= 100000.0),
