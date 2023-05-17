@@ -35,4 +35,17 @@ FROM inspection ins
 		ON ins.vehicule = v.id_vehicule
 GROUP BY v.immatriculation;
 
+-- requête 3 mathis 
+
+SELECT form.nom AS nom_forme, cou.nom AS nom_couleur, COUNT(*) AS nombre_fois
+FROM lumiere AS lum
+INNER JOIN signalisation AS sig 
+ON lum.signalisation = sig.id_signalisation
+INNER JOIN forme form 
+ON lum.forme = form.id_forme
+INNER JOIN couleur AS  cou 
+ON lum.couleur = cou.id_couleur
+GROUP BY lum.forme, lum.couleur, form.nom, cou.nom
+ORDER BY nombre_fois DESC;
+
 --JULIETTE
