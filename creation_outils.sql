@@ -525,12 +525,8 @@ BEGIN
 END$$;
 
 
---VIEW NOE - donne le cout total d'une inspection
-CREATE VIEW inspection_fees AS 
-SELECT 
-  i.id_inspection, 
-  (e.salaire * EXTRACT(hour FROM (i.date_fin - i.date_debut))) AS employee_fee, 
-  cout_vehicule(i.vehicule, (i.km_fin_inspect - i.km_debut_inspect)) AS vehicle_fee, 
-  (e.salaire * EXTRACT(hour FROM (i.date_fin - i.date_debut))) + cout_vehicule(i.vehicule, (i.km_fin_inspect - i.km_debut_inspect)) AS total_fee
-FROM inspection i 
-INNER JOIN employe e ON i.conducteur = e.id_employe;
+--VIEW NOE - sélectionne informations de inspection et véhicule
+CREATE VIEW vue_inspection_vehicule AS
+SELECT ins.id_inspection, ins.date_debut, ins.date_fin, v.marque, v.modele, v.immatriculation
+FROM inspection ins
+JOIN vehicule v ON ins.vehicule = v.id_vehicule;
