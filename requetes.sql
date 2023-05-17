@@ -37,8 +37,7 @@ GROUP BY emp.nom;
 
 -- =======================================================
 -- Requête #2
--- Objectif : Pour chaque véhicule, combien de kilomètres de tronçons ont été parcourus pour réaliser
-les inspections.
+-- Objectif : Pour chaque véhicule, combien de kilomètres de tronçons ont été parcourus pour réaliser les inspections.
 --
 --
 -- Évaluation : Fonctionnel
