@@ -71,7 +71,7 @@ SELECT form.nom AS nom_forme, cou.nom AS nom_couleur, COUNT(*) AS nombre_fois
 		ON lum.couleur = cou.id_couleur
 WHERE EXISTS (
 	SELECT 
-	FROM lumiere AS lum2
+		FROM lumiere AS lum2
 		INNER JOIN signalisation AS sig2
 			ON lum2.signalisation = sig2.id_signalisation
 		INNER JOIN forme form2 
