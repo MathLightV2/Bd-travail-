@@ -70,7 +70,8 @@ SELECT form.nom AS nom_forme, cou.nom AS nom_couleur, COUNT(*) AS nombre_fois
 	INNER JOIN couleur AS  cou 
 		ON lum.couleur = cou.id_couleur
 GROUP BY lum.forme, lum.couleur, form.nom, cou.nom
-ORDER BY nombre_fois DESC;
+ORDER BY nombre_fois DESC
+LIMIT 3;
 -- =======================================================
 
 --JULIETTE
