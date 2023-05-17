@@ -4,12 +4,12 @@ DROP TRIGGER IF EXISTS insert_nom_fichier_donnees on inspection;
 
 DROP FUNCTION IF EXISTS id_type_pan, id_dis_pan, id_poste, id_departement, id_employe, salaire_annuel 
 						,select_rand_id, cout_vehicule, generate_nom_fichier_donnees, genere_marque_random
-						,transform_heures;
+						,genere_num_serie_random ,transform_heures;
 						
 DROP PROCEDURE IF EXISTS ajout_employe, ajout_signalisation, ajout_panneau, ajout_troncon, insert_calibration
 						,insert_rand_panneau, insert_rand_signalisation, ajout_lumiere, ajout_dis_par
 						,insert_inspection, insert_rand_dis_particulier, insert_rand_lumiere, insert_loop
-						,insert_rand_profileur;
+						,insert_rand_profileur, insert_rand_inspection_troncon;
 
 ALTER TABLE IF EXISTS calibration DROP CONSTRAINT IF EXISTS fk_cal_emp;
 ALTER TABLE IF EXISTS calibration DROP CONSTRAINT IF EXISTS fk_cal_pro;

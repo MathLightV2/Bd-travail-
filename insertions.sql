@@ -19,10 +19,10 @@ CALL ajout_employe('Vincent', 'Juliette', 'f', '987651234', 150.75, '2023-04-01'
 CALL ajout_employe('Webster', 'Patrick', 'H', '654321789', 220.3, '2023-04-01', 'professionnel', 'informatique');
 
 -- insertion profileur MATHIS
-INSERT INTO profileur (marque,no_serie,date_fab,date_aqui)
-VALUES 	('Solinst','485321QWERFGTHYT','2008-09-14','2018-10-19'),
-		('Dektak','484321QWFRFGTHBT','2014-08-22','2019-06-07'),
-		('Normandin','486321QWEGFGTLYT','2007-05-17','2016-08-06');
+INSERT INTO profileur (marque,date_fab,date_aqui)
+VALUES 	('Solinst','2008-09-14','2018-10-19'),
+		('Dektak','2014-08-22','2019-06-07'),
+		('Normandin','2007-05-17','2016-08-06');
 CALL insert_rand_profileur();		
 		
 -- insertion calibration MATHIS
@@ -177,5 +177,6 @@ VALUES
 
 -- insertion inspection NOE
 CALL insert_loop();
+
 -- insertion inspection_troncon NOE
 CALL insert_rand_inspection_troncon();

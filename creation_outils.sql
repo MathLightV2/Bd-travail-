@@ -3,6 +3,7 @@ DROP INDEX IF EXISTS idx_cali_emp ;
 CREATE INDEX idx_cali_emp
 ON calibration (employe);
 
+
 CREATE FUNCTION genere_marque_random()
 RETURNS TEXT
 LANGUAGE plpgsql
@@ -16,18 +17,18 @@ AS $$
 	END;
 $$;
 
+-- Fonction créer par MATHIS transformer en trigger par ROMAIN
 CREATE OR REPLACE FUNCTION genere_num_serie_random()
-RETURNS TEXT
-LANGUAGE plpgsql
+RETURNS TRIGGER
 AS $$
 	DECLARE
 		num_rand TEXT;
 	BEGIN
 		num_rand := substr(MD5(random()::text), 1, 16);
-		RETURN num_rand; 
-
+		NEW.no_serie = num_rand;
+		RETURN NEW; 
 	END;
-$$;
+$$ LANGUAGE plpgsql;
 
 
 
@@ -46,7 +47,6 @@ AS $$
 		-- ajoute les row
 		FOR i IN 1..10 LOOP
 			SELECT genere_marque_random() INTO _marque;
-			SELECT genere_num_serie_random() INTO _no_serie;
 			SELECT date_trunc('second', NOW() - (RANDOM() * interval '30 days')) INTO _date_fab;
 			SELECT date_trunc('second', _date_fab + (RANDOM() * interval '10 days')) INTO _date_aqui;
 		
@@ -180,6 +180,11 @@ AS $$
         RETURN Rand_id;
     END;
 $$;
+
+CREATE TRIGGER insert_no_serie
+    BEFORE INSERT ON profileur
+    FOR EACH ROW
+    EXECUTE FUNCTION genere_num_serie_random();
 -- ========================================================================================================================
 
 

@@ -56,8 +56,8 @@ ORDER BY "Total ($)" DESC
 
 -- =======================================================
 -- Requête #3
--- Objectif : Sort un rapport des 3 employés ayant la plus haute moyenne de Km parcouru
---			  entant que conducteur et ayant un salaire supérieur a la moyenne salairial de leur département
+-- Objectif : Sort un rapport des 3 employés ayant la plus haute moyenne de Km parcouruentant que conducteur
+--			  en ordre décroisant et ayant un salaire supérieur a la moyenne salarial de leur département
 -- Évaluation : Fonctionnel
 -- Réalisé par : Romain
 -- Aidé par :
