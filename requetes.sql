@@ -210,4 +210,49 @@ ORDER BY nombre_fois DESC
 LIMIT 5;
 -- =======================================================
 
---JULIETTE
+-- JULIETTE
+
+-- =======================================================
+-- Requête # 1
+-- Objectif : Donner le nombre d’inspections où chaque employé était conducteur.
+-- ...
+-- ...
+-- Évaluation : Complètement fonctionnelle
+-- ...
+-- ...
+-- Réalisé par : Juliette Vincent
+-- =======================================================
+SELECT count(*) AS "nombre inspections"
+FROM inspection AS insp
+INNER JOIN employe AS conduct
+ON insp.conducteur = conduct.id_employe
+GROUP BY insp.conducteur
+-- =======================================================
+
+-- =======================================================
+-- Requête # 2
+-- Objectif : Identifier tous les tronçons de rue qui ont un dispositif de signalisation lumineux de
+-- forme « humain », « main » ou « vélo » et en quelle quantité. Le résultat doit montrer
+-- le nom de la rue du tronçon et le nombre de dispositifs lumineux de chaque forme
+-- spécifiée. Le résultat ne devrait pas montrer de NULL (0 si aucune), ni les tronçons qui
+-- n’ont aucun dispositif avec des lumières de ces formes.
+-- ...
+-- ...
+-- Évaluation : Complètement fonctionnelle
+-- ...
+-- ...
+-- Réalisé par : Juliette Vincent
+-- =======================================================
+SELECT rue.nom,
+        COALESCE(sum(case when lum.forme  = trouver_id_forme('humains') then 1 end), 0) as "HUMAIN",
+        COALESCE(sum(case when lum.forme  = trouver_id_forme('main') then 1 end), 0) as "MAIN",
+        COALESCE(sum(case when lum.forme  = trouver_id_forme('velo') then 1 end), 0) as "VELO"
+FROM troncon AS tron
+INNER JOIN rue AS rue
+ON tron.rue = rue.id_rue
+INNER JOIN signalisation AS sign
+ON sign.troncon = tron.id_troncon
+INNER JOIN lumiere AS lum
+ON sign.id_signalisation = lum.signalisation
+
+GROUP BY rue.nom;
