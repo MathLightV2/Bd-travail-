@@ -1,6 +1,7 @@
 DROP VIEW IF EXISTS rapport_inspection, inspection_fees, nbr_ins_emp;
 
 DROP TRIGGER IF EXISTS insert_nom_fichier_donnees on inspection;
+DROP TRIGGER IF EXISTS insert_no_serie on profileur;
 
 DROP FUNCTION IF EXISTS id_type_pan, id_dis_pan, id_poste, id_departement, id_employe, salaire_annuel 
 						,select_rand_id, cout_vehicule, generate_nom_fichier_donnees, genere_marque_random
@@ -23,6 +24,7 @@ ALTER TABLE IF EXISTS employe DROP CONSTRAINT IF EXISTS fk_emp_post;
 ALTER TABLE IF EXISTS employe DROP CONSTRAINT IF EXISTS fk_emp_dep;
 ALTER TABLE IF EXISTS troncon DROP CONSTRAINT IF EXISTS fk_tron_deb;
 ALTER TABLE IF EXISTS troncon DROP CONSTRAINT IF EXISTS fk_tron_fin;
+ALTER TABLE IF EXISTS troncon DROP CONSTRAINT IF EXISTS fk_tron_rue;
 ALTER TABLE IF EXISTS panneau DROP CONSTRAINT IF EXISTS fk_pan_tron;
 ALTER TABLE IF EXISTS panneau DROP CONSTRAINT IF EXISTS fk_pan_type;
 ALTER TABLE IF EXISTS dis_particulier DROP CONSTRAINT IF EXISTS fk_dis_par_tron;
@@ -315,6 +317,7 @@ ALTER TABLE employe ADD CONSTRAINT fk_emp_dep FOREIGN KEY (departement) REFERENC
 --FOREIGN KEY troncon
 ALTER TABLE troncon ADD CONSTRAINT fk_tron_deb FOREIGN KEY (debut_intersection) REFERENCES intersection(id_intersection);
 ALTER TABLE troncon ADD CONSTRAINT fk_tron_fin FOREIGN KEY (fin_intersection) REFERENCES intersection(id_intersection);
+ALTER TABLE troncon ADD CONSTRAINT fk_tron_rue FOREIGN KEY (rue) REFERENCES rue(id_rue);
 
 --FOREIGN KEY panneau
 ALTER TABLE panneau ADD CONSTRAINT fk_pan_tron FOREIGN KEY (troncon) REFERENCES troncon(id_troncon);
