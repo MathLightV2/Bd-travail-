@@ -273,10 +273,9 @@ $$;
 -- ===================================================================================================================
 
 
+-- =================================================== JULIETTE PROCEDURE ============================================
 
-
--- JULIETTE
--- procedure : insertion dis_particulier aléatoire
+-- Procedure d'insertion dis_particulier aléatoire
 CREATE PROCEDURE insert_rand_dis_particulier()
 LANGUAGE PLPGSQL
 AS $$
@@ -298,14 +297,14 @@ AS $$
         END;
 $$;
 
--- procedure : insertion lumiere aléatoire
+-- procedure d'insertion lumiere aléatoire
 CREATE PROCEDURE insert_rand_lumiere()
 LANGUAGE PLPGSQL
 AS $$
     DECLARE
-     _forme			lumiere.forme%TYPE;
-    _couleur			lumiere.couleur%TYPE;
-    _mode		    lumiere.mode%TYPE;
+     _forme		lumiere.forme%TYPE;
+    _couleur		lumiere.couleur%TYPE;
+    _mode		lumiere.mode%TYPE;
     _signalisation	lumiere.signalisation%TYPE;
 
     BEGIN
@@ -324,10 +323,11 @@ $$;
 
 -- procedure d'insertion lumiere
 CREATE PROCEDURE ajout_lumiere(
-    _forme			lumiere.forme%TYPE,
-    _couleur			lumiere.couleur%TYPE,
-    _mode		    lumiere.mode%TYPE,
+    _forme		lumiere.forme%TYPE,
+    _couleur		lumiere.couleur%TYPE,
+    _mode		lumiere.mode%TYPE,
     _signalisation	lumiere.signalisation%TYPE)
+    
     LANGUAGE SQL
     AS $$
     INSERT INTO lumiere(forme, couleur, mode, signalisation)
@@ -345,6 +345,25 @@ CREATE PROCEDURE ajout_dis_par(
         VALUES(_type, _position, _troncon)
 $$;
 
+-- Procedure d'insertion pour la table troncon
+CREATE PROCEDURE ajout_troncon(
+	id_troncon			troncon.id_troncon%TYPE,
+	rue_troncon	 		troncon.rue%TYPE,
+    	debut_intersection_tron 	troncon.debut_intersection%TYPE,
+    	fin_intersection_tron 		troncon.fin_intersection%TYPE,
+    	longueur_troncon 		troncon.longueur%TYPE,
+    	limite_troncon 			troncon.limite%TYPE,
+    	nb_voie_troncon 		troncon.nb_voie%TYPE,
+    	pavage_troncon 			troncon.pavage%TYPE)
+	
+LANGUAGE SQL
+AS $$
+INSERT INTO troncon VALUES(
+id_troncon, rue_troncon, debut_intersection_tron, fin_intersection_tron,
+longueur_troncon, limite_troncon, nb_voie_troncon, pavage_troncon);
+$$;
+-- ================================================ JULIETTE OUTILS =====================================================
+
 -- Vue
 CREATE VIEW nbr_ins_emp AS
 SELECT employe.nom, COUNT(*) AS "Nombres dinspections"
@@ -360,26 +379,20 @@ CREATE INDEX idx_emp_nom
 	ON employe (nom);
 
 
--- Procedure :
--- Insertion pour la table troncon
-CREATE PROCEDURE ajout_troncon(
-	id_troncon troncon.id_troncon%TYPE,
-	rue_troncon troncon.rue%TYPE,
-    debut_intersection_tron troncon.debut_intersection%TYPE,
-    fin_intersection_tron troncon.fin_intersection%TYPE,
-    longueur_troncon troncon.longueur%TYPE,
-    limite_troncon troncon.limite%TYPE,
-    nb_voie_troncon troncon.nb_voie%TYPE,
-    pavage_troncon troncon.pavage%TYPE
-)
+-- ================================================== JULIETTE FONCTION ===============================================
+
+-- Trouve le id d'une forme
+DROP FUNCTION IF EXISTS trouver_forme;
+CREATE FUNCTION trouver_forme(nom_forme forme.nom%TYPE)
+	RETURNS INT
 LANGUAGE SQL
 AS $$
-INSERT INTO troncon VALUES(
-id_troncon, rue_troncon, debut_intersection_tron, fin_intersection_tron,
-longueur_troncon, limite_troncon, nb_voie_troncon, pavage_troncon);
-$$;
+	SELECT count(*) FROM lumiere AS lum
+	INNER JOIN forme AS forme
+	ON lum.forme = forme.id_forme
+	WHERE nom = nom_forme
+	$$;
 
--- Fonction :
 -- Trouver le salaire total annuel d'un employe
 CREATE FUNCTION salaire_annuel(
 	_nas	 employe.nas%TYPE)
@@ -389,7 +402,7 @@ CREATE FUNCTION salaire_annuel(
 	SELECT (salaire *  35 * 52)::NUMERIC(8,2) FROM employe WHERE _nas = nas;
 	$$;
 
-----------------------------------------------------------------------------------
+-- ===================================================================================================================
 --PROCEDURE NOE
 CREATE OR REPLACE PROCEDURE insert_rand_inspection_troncon()
 LANGUAGE PLPGSQL
