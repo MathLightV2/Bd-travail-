@@ -419,6 +419,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+--SEQUENCE NOE - incrémente num pour fichier
 CREATE SEQUENCE IF NOT EXISTS seq_incr START 20;
 
 --FUNCTION NOE - génère automatiquement un nom de fichier
