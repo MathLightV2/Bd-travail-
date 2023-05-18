@@ -1,4 +1,4 @@
-DROP VIEW IF EXISTS rapport_inspection, inspection_fees, nbr_ins_emp;
+DROP VIEW IF EXISTS rapport_inspection, vue_inspection_vehicule, nbr_ins_emp;
 
 DROP TRIGGER IF EXISTS insert_nom_fichier_donnees on inspection;
 DROP TRIGGER IF EXISTS insert_no_serie on profileur;
