@@ -309,7 +309,7 @@ AS $$
 
     BEGIN
 
-            FOR i IN 1..10 LOOP
+            FOR i IN 1..30 LOOP
             SELECT select_rand_id('id_forme', 'forme') INTO _forme;
             SELECT select_rand_id('id_couleur', 'couleur') INTO _couleur;
             SELECT * FROM unnest(enum_range(NULL::mode)) ORDER BY random() LIMIT 1 INTO _mode;
