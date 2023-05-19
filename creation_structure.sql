@@ -2,6 +2,7 @@ DROP VIEW IF EXISTS rapport_inspection, inspection_fees, nbr_ins_emp;
 
 DROP TRIGGER IF EXISTS insert_nom_fichier_donnees on inspection;
 DROP TRIGGER IF EXISTS insert_no_serie on profileur;
+DROP TRIGGER IF EXISTS mise_a_jour_salaire ON employe;
 
 DROP FUNCTION IF EXISTS id_type_pan, id_dis_pan, id_poste, id_departement, id_employe, salaire_annuel 
 						,select_rand_id, cout_vehicule, generate_nom_fichier_donnees, genere_marque_random
