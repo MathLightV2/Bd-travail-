@@ -362,22 +362,6 @@ INSERT INTO troncon VALUES(
 id_troncon, rue_troncon, debut_intersection_tron, fin_intersection_tron,
 longueur_troncon, limite_troncon, nb_voie_troncon, pavage_troncon);
 $$;
--- ================================================ JULIETTE OUTILS =====================================================
-
--- Vue
-CREATE VIEW nbr_ins_emp AS
-SELECT employe.nom, COUNT(*) AS "Nombres dinspections"
-FROM inspection
-INNER JOIN employe
-ON inspection.operateur = employe.id_employe
-GROUP BY employe.nom;
-
-
--- Index :
--- trier le nom des employes par ordre ascendant
-CREATE INDEX idx_emp_nom
-	ON employe (nom ASC);
-
 
 -- ================================================== JULIETTE FONCTION ===============================================
 
