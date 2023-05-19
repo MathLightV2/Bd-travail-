@@ -369,8 +369,12 @@ CREATE VIEW rapport_inspection AS
 	ORDER BY ins.date_debut;
 	
 
--- index ROMAIN
+-- Index ROMAIN
 CREATE INDEX idx_calibration ON calibration(date_debut);
 
---INDEX NOE - sort les inspections par date_debut
+--Index NOE - sort les inspections par date_debut
 CREATE INDEX inspect_debut ON inspection (date_debut);
+
+-- Index JULIETTE - trier le nom des employes par ordre ascendant
+CREATE INDEX idx_emp_nom
+	ON employe (nom ASC);
