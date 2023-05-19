@@ -402,7 +402,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER maj_salaire
+CREATE TRIGGER modification_salaire
 BEFORE INSERT ON employe
 FOR EACH ROW
 EXECUTE FUNCTION mise_a_jour_salaire();
