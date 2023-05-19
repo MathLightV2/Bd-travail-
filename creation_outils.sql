@@ -385,6 +385,28 @@ CREATE FUNCTION salaire_annuel(
 	SELECT (salaire *  35 * 52)::NUMERIC(8,2) FROM employe WHERE _nas = nas;
 	$$;
 
+-- Fonction déclencheur - génère un salaire fixe selon certains poste
+CREATE FUNCTION mise_a_jour_salaire()
+RETURNS TRIGGER 
+AS $$
+	DECLARE
+		salaire_fixe NUMERIC(5,2);
+BEGIN
+    IF NEW.poste = 1 THEN
+        salaire_fixe := 220.00;
+    ELSIF NEW.poste = 2 THEN
+        salaire_fixe := 27.50;
+    END IF;
+    NEW.salaire = salaire_fixe;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER maj_salaire
+BEFORE INSERT ON employe
+FOR EACH ROW
+EXECUTE FUNCTION mise_a_jour_salaire();
+
 -- ===================================================================================================================
 --PROCEDURE NOE
 CREATE OR REPLACE PROCEDURE insert_rand_inspection_troncon()
