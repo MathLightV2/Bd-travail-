@@ -256,3 +256,30 @@ INNER JOIN lumiere AS lum
 ON sign.id_signalisation = lum.signalisation
 
 GROUP BY rue.nom;
+-- =======================================================
+
+-- =======================================================
+-- Requête # 3
+-- Objectif : Le nom de la couleur principale (celle qui revient le plus souvent) 
+-- ayant le plus de dispositif lumineux qui ont des lumiere de forme de type fleche
+-- et d'orientation de type verticale.
+-- ...
+-- ...
+-- Évaluation : Complètement fonctionnelle
+-- ...
+-- ...
+-- Réalisé par : Juliette Vincent
+-- =======================================================
+SELECT couleur.nom AS "nom couleur"
+FROM couleur
+INNER JOIN lumiere AS lum
+ON lum.couleur = couleur.id_couleur
+INNER JOIN signalisation AS sign
+ON lum.signalisation = sign.id_signalisation
+WHERE lum.forme = (SELECT forme.id_forme FROM forme AS "forme" WHERE nom = 'fleche') 
+ 					AND sign.orientation = 'verticale'
+GROUP BY couleur.nom
+HAVING COUNT(*) > 1
+ORDER BY COUNT(*) DESC
+LIMIT 1;
+-- =======================================================
