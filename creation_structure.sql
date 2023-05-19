@@ -378,3 +378,12 @@ CREATE INDEX inspect_debut ON inspection (date_debut);
 -- Index JULIETTE - trier le nom des employes par ordre ascendant
 CREATE INDEX idx_emp_nom
 	ON employe (nom ASC);
+	
+-- Vue JULIETTE :
+-- nombre d'inspections par employe
+CREATE VIEW nbr_ins_emp AS
+SELECT employe.nom, COUNT(*) AS "Nombres dinspections"
+FROM inspection
+INNER JOIN employe
+ON inspection.operateur = employe.id_employe
+GROUP BY employe.nom;
