@@ -366,7 +366,6 @@ $$;
 -- ================================================== JULIETTE FONCTION ===============================================
 
 -- Trouve le id d'une forme
-DROP FUNCTION IF EXISTS trouver_forme;
 CREATE FUNCTION trouver_forme(nom_forme forme.nom%TYPE)
 	RETURNS INT
 LANGUAGE SQL
