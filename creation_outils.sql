@@ -387,7 +387,7 @@ CREATE FUNCTION trouver_forme(nom_forme forme.nom%TYPE)
 	RETURNS INT
 LANGUAGE SQL
 AS $$
-	SELECT count(*) FROM lumiere AS lum
+	SELECT COUNT(*) FROM lumiere AS lum
 	INNER JOIN forme AS forme
 	ON lum.forme = forme.id_forme
 	WHERE nom = nom_forme
