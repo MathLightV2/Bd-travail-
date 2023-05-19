@@ -376,7 +376,7 @@ GROUP BY employe.nom;
 -- Index :
 -- trier le nom des employes par ordre ascendant
 CREATE INDEX idx_emp_nom
-	ON employe (nom);
+	ON employe (nom ASC);
 
 
 -- ================================================== JULIETTE FONCTION ===============================================
