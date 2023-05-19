@@ -386,18 +386,21 @@ CREATE FUNCTION salaire_annuel(
 	$$;
 
 -- Fonction déclencheur - génère un salaire fixe selon certains poste
-CREATE FUNCTION mise_a_jour_salaire()
+
+CREATE OR REPLACE FUNCTION mise_a_jour_salaire()
 RETURNS TRIGGER 
 AS $$
 	DECLARE
 		salaire_fixe NUMERIC(5,2);
 BEGIN
     IF NEW.poste = 1 THEN
-        salaire_fixe := 220.00;
+        NEW.salaire := 220.00;
     ELSIF NEW.poste = 2 THEN
-        salaire_fixe := 27.50;
+        NEW.salaire := 27.50;
     END IF;
-    NEW.salaire = salaire_fixe;
+	IF NEW.salaire = null THEN
+	NEW.salaire = OLD.salaire;
+	END IF;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
