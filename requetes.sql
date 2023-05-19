@@ -222,7 +222,7 @@ LIMIT 5;
 -- ...
 -- Réalisé par : Juliette Vincent
 -- =======================================================
-SELECT count(*) AS "nombre inspections"
+SELECT COUNT(*) AS "nombre inspections"
 FROM inspection AS insp
 INNER JOIN employe AS conduct
 ON insp.conducteur = conduct.id_employe
