@@ -244,9 +244,9 @@ GROUP BY insp.conducteur
 -- Réalisé par : Juliette Vincent
 -- =======================================================
 SELECT rue.nom,
-        COALESCE(sum(case when lum.forme  = trouver_id_forme('humains') then 1 end), 0) as "HUMAIN",
-        COALESCE(sum(case when lum.forme  = trouver_id_forme('main') then 1 end), 0) as "MAIN",
-        COALESCE(sum(case when lum.forme  = trouver_id_forme('velo') then 1 end), 0) as "VELO"
+        COALESCE(sum(case when lum.forme  = trouver_forme('humains') then 1 end), 0) as "HUMAIN",
+        COALESCE(sum(case when lum.forme  = trouver_forme('main') then 1 end), 0) as "MAIN",
+        COALESCE(sum(case when lum.forme  = trouver_forme('velo') then 1 end), 0) as "VELO"
 FROM troncon AS tron
 INNER JOIN rue AS rue
 ON tron.rue = rue.id_rue
