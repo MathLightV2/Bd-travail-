@@ -2,10 +2,11 @@ DROP VIEW IF EXISTS rapport_inspection, vue_inspection_vehicule, nbr_ins_emp;
 
 DROP TRIGGER IF EXISTS insert_nom_fichier_donnees on inspection;
 DROP TRIGGER IF EXISTS insert_no_serie on profileur;
+DROP TRIGGER IF EXISTS modification_salaire ON employe;
 
 DROP FUNCTION IF EXISTS id_type_pan, id_dis_pan, id_poste, id_departement, id_employe, salaire_annuel 
 						,select_rand_id, cout_vehicule, generate_nom_fichier_donnees, genere_marque_random
-						,genere_num_serie_random ,transform_heures;
+						,genere_num_serie_random ,transform_heures, trouver_forme;
 						
 DROP PROCEDURE IF EXISTS ajout_employe, ajout_signalisation, ajout_panneau, ajout_troncon, insert_calibration
 						,insert_rand_panneau, insert_rand_signalisation, ajout_lumiere, ajout_dis_par
@@ -369,8 +370,21 @@ CREATE VIEW rapport_inspection AS
 	ORDER BY ins.date_debut;
 	
 
--- index ROMAIN
+-- Index ROMAIN
 CREATE INDEX idx_calibration ON calibration(date_debut);
 
---INDEX NOE - sort les inspections par date_debut
+--Index NOE - sort les inspections par date_debut
 CREATE INDEX inspect_debut ON inspection (date_debut);
+
+-- Index JULIETTE - trier le nom des employes par ordre ascendant
+CREATE INDEX idx_emp_nom
+	ON employe (nom ASC);
+	
+-- Vue JULIETTE :
+-- nombre d'inspections par employe
+CREATE VIEW nbr_ins_emp AS
+SELECT employe.nom, COUNT(*) AS "Nombres dinspections"
+FROM inspection
+INNER JOIN employe
+ON inspection.operateur = employe.id_employe
+GROUP BY employe.nom;

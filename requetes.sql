@@ -1,18 +1,3 @@
--- =======================================================
--- Requête #
--- Objectif : ...
--- ...
--- ...
--- Évaluation : ...
--- ...
--- ...
--- Réalisé par : ...
--- Aidé par : ...
--- =======================================================
-votre requête
--- =======================================================
-
-
 -- ROMAIN
 -- =======================================================
 -- Requête #1
@@ -225,4 +210,76 @@ ORDER BY nombre_fois DESC
 LIMIT 5;
 -- =======================================================
 
---JULIETTE
+-- JULIETTE
+
+-- =======================================================
+-- Requête # 1
+-- Objectif : Donner le nombre d’inspections où chaque employé était conducteur.
+-- ...
+-- ...
+-- Évaluation : Complètement fonctionnelle
+-- ...
+-- ...
+-- Réalisé par : Juliette Vincent
+-- =======================================================
+SELECT COUNT(*) AS "nombre inspections"
+FROM inspection AS insp
+INNER JOIN employe AS conduct
+ON insp.conducteur = conduct.id_employe
+GROUP BY insp.conducteur
+-- =======================================================
+
+-- =======================================================
+-- Requête # 2
+-- Objectif : Identifier tous les tronçons de rue qui ont un dispositif de signalisation lumineux de
+-- forme « humain », « main » ou « vélo » et en quelle quantité. Le résultat doit montrer
+-- le nom de la rue du tronçon et le nombre de dispositifs lumineux de chaque forme
+-- spécifiée. Le résultat ne devrait pas montrer de NULL (0 si aucune), ni les tronçons qui
+-- n’ont aucun dispositif avec des lumières de ces formes.
+-- ...
+-- ...
+-- Évaluation : Complètement fonctionnelle
+-- ...
+-- ...
+-- Réalisé par : Juliette Vincent
+-- =======================================================
+SELECT rue.nom,
+        COALESCE(sum(case when lum.forme  = trouver_forme('humains') then 1 end), 0) as "HUMAIN",
+        COALESCE(sum(case when lum.forme  = trouver_forme('main') then 1 end), 0) as "MAIN",
+        COALESCE(sum(case when lum.forme  = trouver_forme('velo') then 1 end), 0) as "VELO"
+FROM troncon AS tron
+INNER JOIN rue AS rue
+ON tron.rue = rue.id_rue
+INNER JOIN signalisation AS sign
+ON sign.troncon = tron.id_troncon
+INNER JOIN lumiere AS lum
+ON sign.id_signalisation = lum.signalisation
+
+GROUP BY rue.nom;
+-- =======================================================
+
+-- =======================================================
+-- Requête # 3
+-- Objectif : Le nom de la couleur principale (celle qui revient le plus souvent) 
+-- ayant le plus de dispositif lumineux qui ont des lumiere de forme de type fleche
+-- et d'orientation de type verticale.
+-- ...
+-- ...
+-- Évaluation : Complètement fonctionnelle
+-- ...
+-- ...
+-- Réalisé par : Juliette Vincent
+-- =======================================================
+SELECT couleur.nom AS "nom couleur"
+FROM couleur
+INNER JOIN lumiere AS lum
+ON lum.couleur = couleur.id_couleur
+INNER JOIN signalisation AS sign
+ON lum.signalisation = sign.id_signalisation
+WHERE lum.forme = (SELECT forme.id_forme FROM forme AS "forme" WHERE nom = 'fleche') 
+ 					AND sign.orientation = 'verticale'
+GROUP BY couleur.nom
+HAVING COUNT(*) > 1
+ORDER BY COUNT(*) DESC
+LIMIT 1;
+-- =======================================================

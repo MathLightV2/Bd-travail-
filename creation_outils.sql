@@ -273,10 +273,9 @@ $$;
 -- ===================================================================================================================
 
 
+-- =================================================== JULIETTE PROCEDURE ============================================
 
-
--- JULIETTE
--- procedure : insertion dis_particulier aléatoire
+-- Procedure d'insertion dis_particulier aléatoire
 CREATE PROCEDURE insert_rand_dis_particulier()
 LANGUAGE PLPGSQL
 AS $$
@@ -298,19 +297,19 @@ AS $$
         END;
 $$;
 
--- procedure : insertion lumiere aléatoire
+-- procedure d'insertion lumiere aléatoire
 CREATE PROCEDURE insert_rand_lumiere()
 LANGUAGE PLPGSQL
 AS $$
     DECLARE
-     _forme			lumiere.forme%TYPE;
-    _couleur			lumiere.couleur%TYPE;
-    _mode		    lumiere.mode%TYPE;
+     _forme		lumiere.forme%TYPE;
+    _couleur		lumiere.couleur%TYPE;
+    _mode		lumiere.mode%TYPE;
     _signalisation	lumiere.signalisation%TYPE;
 
     BEGIN
 
-            FOR i IN 1..10 LOOP
+            FOR i IN 1..30 LOOP
             SELECT select_rand_id('id_forme', 'forme') INTO _forme;
             SELECT select_rand_id('id_couleur', 'couleur') INTO _couleur;
             SELECT * FROM unnest(enum_range(NULL::mode)) ORDER BY random() LIMIT 1 INTO _mode;
@@ -324,10 +323,11 @@ $$;
 
 -- procedure d'insertion lumiere
 CREATE PROCEDURE ajout_lumiere(
-    _forme			lumiere.forme%TYPE,
-    _couleur			lumiere.couleur%TYPE,
-    _mode		    lumiere.mode%TYPE,
+    _forme		lumiere.forme%TYPE,
+    _couleur		lumiere.couleur%TYPE,
+    _mode		lumiere.mode%TYPE,
     _signalisation	lumiere.signalisation%TYPE)
+    
     LANGUAGE SQL
     AS $$
     INSERT INTO lumiere(forme, couleur, mode, signalisation)
@@ -345,33 +345,17 @@ CREATE PROCEDURE ajout_dis_par(
         VALUES(_type, _position, _troncon)
 $$;
 
--- Vue
-CREATE VIEW nbr_ins_emp AS
-SELECT employe.nom, COUNT(*) AS "Nombres dinspections"
-FROM inspection
-INNER JOIN employe
-ON inspection.operateur = employe.id_employe
-GROUP BY employe.nom;
-
-
--- Index :
--- trier le nom des employes par ordre ascendant
-CREATE INDEX idx_emp_nom
-	ON employe (nom);
-
-
--- Procedure :
--- Insertion pour la table troncon
+-- Procedure d'insertion pour la table troncon
 CREATE PROCEDURE ajout_troncon(
-	id_troncon troncon.id_troncon%TYPE,
-	rue_troncon troncon.rue%TYPE,
-    debut_intersection_tron troncon.debut_intersection%TYPE,
-    fin_intersection_tron troncon.fin_intersection%TYPE,
-    longueur_troncon troncon.longueur%TYPE,
-    limite_troncon troncon.limite%TYPE,
-    nb_voie_troncon troncon.nb_voie%TYPE,
-    pavage_troncon troncon.pavage%TYPE
-)
+	id_troncon			troncon.id_troncon%TYPE,
+	rue_troncon	 		troncon.rue%TYPE,
+    	debut_intersection_tron 	troncon.debut_intersection%TYPE,
+    	fin_intersection_tron 		troncon.fin_intersection%TYPE,
+    	longueur_troncon 		troncon.longueur%TYPE,
+    	limite_troncon 			troncon.limite%TYPE,
+    	nb_voie_troncon 		troncon.nb_voie%TYPE,
+    	pavage_troncon 			troncon.pavage%TYPE)
+	
 LANGUAGE SQL
 AS $$
 INSERT INTO troncon VALUES(
@@ -379,7 +363,19 @@ id_troncon, rue_troncon, debut_intersection_tron, fin_intersection_tron,
 longueur_troncon, limite_troncon, nb_voie_troncon, pavage_troncon);
 $$;
 
--- Fonction :
+-- ================================================== JULIETTE FONCTION ===============================================
+
+-- Trouve le id d'une forme
+CREATE FUNCTION trouver_forme(nom_forme forme.nom%TYPE)
+	RETURNS INT
+LANGUAGE SQL
+AS $$
+	SELECT COUNT(*) FROM lumiere AS lum
+	INNER JOIN forme AS forme
+	ON lum.forme = forme.id_forme
+	WHERE nom = nom_forme
+	$$;
+
 -- Trouver le salaire total annuel d'un employe
 CREATE FUNCTION salaire_annuel(
 	_nas	 employe.nas%TYPE)
@@ -389,7 +385,32 @@ CREATE FUNCTION salaire_annuel(
 	SELECT (salaire *  35 * 52)::NUMERIC(8,2) FROM employe WHERE _nas = nas;
 	$$;
 
-----------------------------------------------------------------------------------
+-- Fonction déclencheur - génère un salaire fixe selon certains poste
+
+CREATE OR REPLACE FUNCTION mise_a_jour_salaire()
+RETURNS TRIGGER 
+AS $$
+	DECLARE
+		salaire_fixe NUMERIC(5,2);
+BEGIN
+    IF NEW.poste = 1 THEN
+        NEW.salaire := 220.00;
+    ELSIF NEW.poste = 2 THEN
+        NEW.salaire := 27.50;
+    END IF;
+	IF NEW.salaire = null THEN
+	NEW.salaire = OLD.salaire;
+	END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER modification_salaire
+BEFORE INSERT ON employe
+FOR EACH ROW
+EXECUTE FUNCTION mise_a_jour_salaire();
+
+-- ===================================================================================================================
 --PROCEDURE NOE
 CREATE OR REPLACE PROCEDURE insert_rand_inspection_troncon()
 LANGUAGE PLPGSQL
